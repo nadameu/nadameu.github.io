@@ -1,0 +1,71 @@
+:root {
+  --base-hue: 200;
+  --input-hue: 60;
+  --output-hue: 120;
+
+  --background: hsl(var(--base-hue), 75%, 85%);
+  --text: hsl(var(--base-hue), 75%, 15%);
+
+  --input-background: hsl(var(--input-hue), 100%, 90%);
+  --input-highlight: hsl(var(--input-hue), 50%, 95%);
+  --input-dark: hsl(var(--input-hue), 25%, 50%);
+
+  --output-background: hsl(var(--output-hue), 100%, 90%);
+  --output-highlight: hsl(var(--output-hue), 50%, 95%);
+  --output-dark: hsl(var(--output-hue), 25%, 50%);
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 10pt;
+}
+body {
+  background: var(--background);
+  margin: 8px;
+  color: var(--text);
+}
+.titulo {
+  margin: 0 0 0.5em;
+  line-height: 1em;
+}
+h1 {
+  font-size: 1.5em;
+}
+h2 {
+  font-size: 1.25em;
+}
+h3 {
+  font-size: 1.15em;
+}
+h4 {
+  font-size: 1.1em;
+}
+.checkbox {
+  margin-bottom: 0.5em;
+}
+.input, .output {
+  border-width: 1px;
+  border-style: solid;
+  background: var(--input-background);
+  border-color: var(--input-dark) var(--input-highlight) var(--input-highlight) var(--input-dark);
+  text-align: right;
+  margin-bottom: 0.5em;
+  height: 1.5em;
+}
+.output {
+  background: var(--output-background);
+  border-color: var(--output-dark) var(--output-highlight) var(--output-highlight) var(--output-dark);
+  color: var(--text);
+}
+.grupo {
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px groove var(--background);
+}
+.grupo_level1, .grupo_level3, .grupo_level5 {
+  border-style: inset;
+}
+.grupo_level2, .grupo_level4, .grupo_level6 {
+  border-style: outset;
+}
