@@ -2,6 +2,80 @@
 window.addEventListener('load', () => {
 	const { bind, wire } = hyperHTML;
 
+	class Paginacao {
+		constructor(userProps) {
+			const props = Object.assign({ atual: 0 }, userProps);
+			Object.assign(this, props);
+			this.eventHandlers = new Map();
+			this.handleEvent = this.handleEvent.bind(this);
+			this.on('previous', this.onPrevious.bind(this));
+			this.on('next', this.onNext.bind(this));
+		}
+
+		handleEvent(type) {
+			return evt => {
+				if (this.eventHandlers.has(type)) {
+					this.eventHandlers.get(type).forEach(handler => handler(evt));
+				}
+			};
+		}
+
+		on(type, handler) {
+			if (! this.eventHandlers.has(type)) {
+				this.eventHandlers.set(type, []);
+			}
+			const handlers = this.eventHandlers.get(type);
+			handlers.push(handler);
+			return () => this.eventHandlers.set(type, handlers.filter(h => h !== handler));
+		}
+
+		onNext() {
+			const [next] = this.proximasPaginas();
+			if (typeof next === 'undefined') return;
+			this.atual = this.paginas.indexOf(next);
+			this.handleEvent('change')({});
+		}
+
+		onPrevious() {
+			const [prev] = this.paginasAnteriores().reverse();
+			if (typeof prev === 'undefined') return;
+			this.atual = this.paginas.indexOf(prev);
+			this.handleEvent('change')({});
+		}
+
+		paginasAnteriores() {
+			return this.paginas.filter((pagina, i) => i < this.atual).filter(pagina => ! pagina.hidden);
+		}
+
+		proximasPaginas() {
+			return this.paginas.filter((pagina, i) => i > this.atual).filter(pagina => ! pagina.hidden);
+		}
+
+		render() {
+			const paginas = this.paginas.map((pagina, index) => {
+				const num = index + 1;
+				const id = `pagina_${num}`;
+				const classes = [
+					'pagina',
+					id,
+					index === this.atual ? 'pagina_atual' : 'pagina_outra',
+					pagina.hidden ? 'pagina_oculta' : 'pagina_ativa'
+				].join(' ');
+				return wire(pagina)`<section id=${id} class=${classes}>${pagina.render()}</section>`;
+			});
+			const paginasAnteriores = this.paginasAnteriores().length;
+			const proximasPaginas = this.proximasPaginas().length;
+			const classes = (ativo, extraClass) => ['button', ativo ? 'button_active' : 'button_inactive', extraClass].join(' ');
+			const obj1 = {}, obj2 = {};
+			const [anterior1, anterior2] = [obj1, obj2].map(obj => wire(obj)`<button class=${classes(paginasAnteriores > 0, 'button_prev')} disabled=${! paginasAnteriores > 0} onclick=${this.handleEvent('previous')}>Página anterior</button>`);
+			const [proxima1, proxima2] = [obj1, obj2].map(obj => wire(obj)`<button class=${classes(proximasPaginas > 0, 'button_next')} disabled=${! proximasPaginas > 0} onclick=${this.handleEvent('next')}>Próxima página</button>`);
+			const [info1, info2] = [obj1, obj2].map(obj => wire(obj)`Página ${paginasAnteriores + 1} de ${paginasAnteriores + 1 + proximasPaginas}`);
+			const cabecalho = wire(this)`<header class="header">${anterior1}${info1}${proxima1}</header>`;
+			const rodape = wire(this)`<footer class="footer">${anterior2}${info2}${proxima2}</footer>`;
+			return wire(this)`<div class="paginacao">${cabecalho}${paginas}${rodape}</div>`;
+		}
+	}
+
 	class Grupo {
 		get header() {
 			if (! this._header) {
@@ -101,6 +175,30 @@ window.addEventListener('load', () => {
 		}
 	}
 
+	class CampoData extends LabelInput {
+		get cssClass() { return 'input_data'; }
+		get size() { return 10; }
+
+		constructor(userProps) {
+			const props = Object.assign({ defaultValue: 'dd/mm/aaaa' }, userProps);
+			super(props);
+			this.on('input', this.onInput.bind(this));
+		}
+
+		onInput(evt) {
+			const { target } = evt, { value } = target;
+			const sanitized = value.replace(/\D/g, '');
+			if (sanitized.length < 3) {
+				target.value = sanitized;
+			} else if (sanitized.length < 5) {
+				target.value = [sanitized.slice(0, 2), sanitized.slice(2)].join('/');
+			} else {
+				target.value = [sanitized.slice(0, 2), sanitized.slice(2, 4), sanitized.slice(4)].join('/');
+			}
+			this.value = target.value;
+		}
+	}
+
 	class CampoMesAno extends LabelInput {
 		get cssClass() { return 'input_mes-ano'; }
 		get size() { return 7; }
@@ -151,6 +249,37 @@ window.addEventListener('load', () => {
 		}
 	}
 
+	class CampoPorcentagem extends Component {
+		get cssClass() { return 'input_pct'; }
+		get size() { return 3; }
+
+		constructor(userProps) {
+			const props = Object.assign({ defaultValue: '0' }, userProps);
+			super(props);
+			this.on('input', this.onInput.bind(this));
+		}
+
+		onInput(evt) {
+			const { target } = evt, { value } = target;
+			const sanitized = value.replace(/\D/g, '');
+			const num = Number(sanitized) / 100;
+			if (num === 0) {
+				target.value = '';
+			} else {
+				target.value = (num * 100).toLocaleString('pt-br', {
+					useGrouping: false,
+					minimumIntegerDigits: 1,
+					maximumFractionDigits: 0
+				});
+			}
+			this.value = target.value;
+		}
+
+		render() {
+			return wire(this)`${this.renderLabel()}<br>${this.renderInput()}%<br>`;
+		}
+	}
+
 	class CampoRadio extends Component {
 		constructor(userProps) {
 			const props = Object.assign({}, userProps);
@@ -165,9 +294,9 @@ window.addEventListener('load', () => {
 		render() {
 			const options = this.options.map((option, index) => {
 				const id = `${this.name}_${index}`;
-				return wire(option)`<input type="radio" id=${id} name=${this.name} class=${['radio', this.name].join(' ')} value=${option.value} checked=${option.value === this.value} onchange=${this.handleEvent}> <label for=${id}>${option.text}</label><br>`;
+				return wire()`<input type="radio" id=${id} name=${this.name} class=${['radio', this.name].join(' ')} value=${option.value} checked=${option.value === this.value} onchange=${this.handleEvent}> <label for=${id}>${option.text}</label><br>`;
 			});
-			return wire()`${options}`;
+			return wire(this)`${options}`;
 		}
 	}
 
@@ -213,14 +342,30 @@ window.addEventListener('load', () => {
 		],
 		value: 'qtd'
 	});
-	const qtdAnterior = new CampoQtd({ id: 'contadoria__qtd-anterior', text: 'Competências anos anteriores - nº de meses:' });
-	const qtdAtual = new CampoQtd({ id: 'contadoria__qtd-atual', text: 'Competências ano atual - nº de meses:' });
+	const qtdAnterior = new CampoQtd({ id: 'contadoria__qtd-anterior', text: 'Competências anos anteriores:' });
+	const qtdAtual = new CampoQtd({ id: 'contadoria__qtd-atual', text: 'Competências ano atual:' });
 	const mesInicial = new CampoMesAno({ id: 'contadoria__mes-inicial', text: 'Mês inicial:' });
 	const mesFinal = new CampoMesAno({ id: 'contadoria__mes-final', text: 'Mês final:' });
 	const decimo = new CampoBool({ id: 'contadoria__decimo', text: 'Incluir 13º', value: true });
 	const anterior = new CampoMoeda({ id: 'contadoria__anterior', text: 'Competências anos anteriores - total:' });
 	const atual = new CampoMoeda({ id: 'contadoria__atual', text: 'Competências ano atual - total:' });
-	const dataSucumbencia = new CampoMesAno({ id: 'sucumbencia__data', text: 'Data:' });
+	const dataSucumbencia = new CampoData({ id: 'sucumbencia__data', text: 'Data da decisão que fixou honorários sucumbenciais:' });
+	const pctSucumbencia = new CampoPorcentagem({ id: 'sucumbencia__pct', text: 'Porcentagem:' });
+	const salariosSucumbencia = new CampoQtd({ id: 'sucumbencia__salarios', text: 'Quantidade de salários mínimos caso porcentagem seja menor:' });
+	const metade = new CampoRadio({
+		name: 'metade',
+		options: [
+			{ value: 'integral', text: 'Integral' },
+			{ value: 'metade', text: 'Metade' },
+		],
+		value: 'integral'
+	});
+	const sentAtrasados = new CampoBool({ id: 'sentenca__atrasados', text: 'Atrasados' });
+	const sentAJG = new CampoBool({ id: 'sentenca__ajg', text: 'Ressarcimento dos honorários periciais' });
+	const sentSucumbencia = new CampoBool({ id: 'sentenca__sucumbencia', text: 'Honorários de sucumbência' });
+	const dataHonPer = new CampoData({ id: 'ajg__data', text: 'Data de solicitação do pagamento:' });
+	const valorHonPer = new CampoMoeda({ id: 'ajg__valor', text: 'Valor requisitado:', defaultValue: '200,00' });
+
 	const meses = new Grupo({
 		id: 'meses',
 		title: 'Quantidade de meses',
@@ -241,6 +386,7 @@ window.addEventListener('load', () => {
 	});
 	const contadoria = new Grupo({
 		id: 'contadoria',
+		hidden: true,
 		title: 'Cálculo da contadoria',
 		items: [
 			dataBase,
@@ -254,52 +400,79 @@ window.addEventListener('load', () => {
 			atual,
 		]
 	});
-	const atrasados = new Grupo({
-		id: 'atrasados',
-		title: 'Atrasados',
+	const ajg = new Grupo({
+		id: 'ajg',
+		hidden: true,
+		title: 'Ressarcimento dos honorários periciais',
 		items: [
-			contadoria,
+			metade
 		]
 	});
 	const sucumbencia = new Grupo({
 		title: 'Honorários de sucumbência',
 		hidden: true,
 		items: [
-			dataSucumbencia
+			dataSucumbencia,
+			pctSucumbencia,
+			salariosSucumbencia
 		]
 	});
 
-	const sentAtrasados = new CampoBool({ id: 'sentenca__atrasados', text: 'Atrasados', value: true });
-	const sentSucumbencia = new CampoBool({ id: 'sentenca__sucumbencia', text: 'Honorários de sucumbência' });
-	const sentAJG = new CampoBool({ id: 'sentenca__ajg', text: 'Reembolso dos honorários periciais', value: true });
 	const sentenca = new Grupo({
 		id: 'sentenca',
-		title: 'Sentença',
+		title: 'Sentença / Acórdão',
 		items: [
 			sentAtrasados,
-			sentSucumbencia,
 			sentAJG,
+			// ajg,
+			sentSucumbencia,
+			// sucumbencia,
 		]
 	});
 
-	const pagina = new Grupo({
-		id: 'calculo',
+	const periciais = new Grupo({
+		id: 'periciais',
+		hidden: true,
+		title: 'Honorários periciais',
+		items: [
+			dataHonPer,
+			valorHonPer,
+		]
+	});
+
+	const pagina1 = new Grupo({
+		id: 'pagina1',
 		title: 'Cálculo para preenchimento de ofícios requisitórios',
 		items: [
 			qtdBeneficiarios,
 			sentenca,
-			atrasados,
+		]
+	});
+
+	const formulario = new Paginacao({
+		paginas: [
+			pagina1,
+			ajg,
 			sucumbencia,
+			periciais,
+			contadoria
 		]
 	});
 
 	const update = () => bind(document.body)`
-    ${pagina.render()}
+    ${formulario.render()}
   `;
 
 	sentAtrasados.on('change', evt => {
 		const { target } = evt, { checked } = target;
-		atrasados.hidden = ! checked;
+		contadoria.hidden = ! checked;
+		update();
+	});
+
+	sentAJG.on('change', evt => {
+		const { target } = evt, { checked } = target;
+		ajg.hidden = ! checked;
+		periciais.hidden = ! checked;
 		update();
 	});
 
@@ -320,6 +493,8 @@ window.addEventListener('load', () => {
 		}
 		update();
 	});
+
+	formulario.on('change', update);
 
 	update();
 });
