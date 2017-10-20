@@ -1,0 +1,69 @@
+:root {
+  --primary: #30648d;
+  --primary-dark: #354e62;
+  --primary-darker: #0b3251;
+  --primary-light: #87bce4;
+  --primary-lighter: #b5d0e4;
+
+  --input: #ecf9ae;
+  --input-dark: #b4bb91;
+  --input-darker: #91a33a;
+  --input-light: #f2fcc3;
+  --input-lighter: #f5fcd2;
+
+  --output: #c4eba4;
+  --output-dark: #9bb189;
+  --output-darker: #649a37;
+  --output-light: #d7f5be;
+  --output-lighter: #dff5cc;
+
+  --complementary: #db9840;
+  --complementary-dark: #98784d;
+  --complementary-darker: #7e4e0e;
+  --complementary-light: #f6c88b;
+  --complementary-lighter: #f6dfc0;
+}
+ body {
+  background: var(--primary-darker);
+  color: var(--primary-darker);
+}
+.hero {
+  color: var(--complementary);
+  /* color: var(--primary-darker); */
+}
+.header, .footer {
+  background: var(--primary);
+  color: var(--primary-lighter);
+}
+.button_active {
+  background: var(--complementary);
+  color: var(--primary-dark);
+}
+.button_inactive {
+  background: var(--primary);
+  color: var(--primary-dark);
+}
+.pagina {
+  background: var(--primary-lighter);
+}
+.input, .output {
+  color: var(--primary-darker);
+}
+.input {
+  background: var(--primary-light);
+}
+.output {
+  background: var(--output-light);
+}
+.checkbox + label::before {
+  background: var(--primary-light);
+}
+.checkbox:checked + label::before {
+  color: var(--primary-darker);
+}
+.radio + label::before {
+  background: var(--primary-light);
+}
+.radio:checked + label::before {
+  color: var(--primary-darker);
+}

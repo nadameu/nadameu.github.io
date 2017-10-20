@@ -1,0 +1,49 @@
+html {
+  box-sizing: border-box;
+}
+html * {
+  box-sizing: inherit;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  display: grid;
+  grid-template: "hero hero hero" auto ". pagina. " 1fr "footer footer footer" auto / auto minmax(320px, 640px) auto;
+}
+.hero {
+  grid-area: hero;
+}
+.header, .footer {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  align-items: center;
+  justify-content: space-evenly;
+}
+.header {
+  display: none;
+  grid-area: header;
+}
+.pagina {
+  grid-area: pagina;
+}
+.footer {
+  grid-area: footer;
+}
+@media (min-width: 640px) {
+  body {
+    grid-template: "header header header" auto "hero hero hero" 4rem ". pagina. " 1fr ". . ." minmax(0, 4rem) "footer footer footer" auto / auto minmax(320px, 640px) auto;
+    grid-row-gap: 16px;
+  }
+  .header {
+    display: grid;
+  }
+  .header, .pagina, .footer {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.38);
+  }
+  .pagina {
+    border-radius: 8px;
+  }
+}

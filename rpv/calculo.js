@@ -72,7 +72,7 @@ window.addEventListener('load', () => {
 			const [info1, info2] = [obj1, obj2].map(obj => wire(obj)`Página ${paginasAnteriores + 1} de ${paginasAnteriores + 1 + proximasPaginas}`);
 			const cabecalho = wire(this)`<header class="header">${anterior1}${info1}${proxima1}</header>`;
 			const rodape = wire(this)`<footer class="footer">${anterior2}${info2}${proxima2}</footer>`;
-			return wire(this)`<div class="paginacao">${cabecalho}${paginas}${rodape}</div>`;
+			return wire(this)`<div class="hero">${this.title}</div>${cabecalho}${paginas}${rodape}`;
 		}
 	}
 
@@ -442,7 +442,7 @@ window.addEventListener('load', () => {
 
 	const pagina1 = new Grupo({
 		id: 'pagina1',
-		title: 'Cálculo para preenchimento de ofícios requisitórios',
+		title: 'Dados da condenação',
 		items: [
 			qtdBeneficiarios,
 			sentenca,
@@ -450,6 +450,7 @@ window.addEventListener('load', () => {
 	});
 
 	const formulario = new Paginacao({
+		title: 'Cálculo para preenchimento de ofícios requisitórios',
 		paginas: [
 			pagina1,
 			ajg,
