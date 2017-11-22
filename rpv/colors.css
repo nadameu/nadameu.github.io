@@ -31,39 +31,39 @@
   color: var(--complementary);
   /* color: var(--primary-darker); */
 }
-.header, .footer {
+header, footer {
   background: var(--primary);
   color: var(--primary-lighter);
 }
-.button_active {
+button {
   background: var(--complementary);
   color: var(--primary-dark);
 }
-.button_inactive {
+button[disabled] {
   background: var(--primary);
   color: var(--primary-dark);
 }
-.pagina {
+article {
   background: var(--primary-lighter);
 }
-.input, .output {
+input, input[disabled] {
   color: var(--primary-darker);
 }
-.input {
+input {
   background: var(--primary-light);
 }
-.output {
+input[disabled] {
   background: var(--output-light);
 }
-.checkbox + label::before {
+input[type="checkbox"] + label::before {
   background: var(--primary-light);
 }
-.checkbox:checked + label::before {
+input[type="checkbox"]:checked + label::before {
   color: var(--primary-darker);
 }
-.radio + label::before {
+input[type="radio"] + label::before {
   background: var(--primary-light);
 }
-.radio:checked + label::before {
+input[type="radio"]:checked + label::before {
   color: var(--primary-darker);
 }

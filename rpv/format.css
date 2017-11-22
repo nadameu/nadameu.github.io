@@ -8,55 +8,53 @@ html, body {
   text-align: center;
   align-self: center;
 }
-.header, .pagina, .footer {
+header, article, footer {
   padding: 8px;
 }
-.header, .footer {
+header, footer {
   font-size: 0.9rem;
 }
 .pagina_oculta, .pagina_outra {
   display: none;
 }
-.button {
+button {
   border: none;
   padding: 8px 4px;
   margin-top: 2px;
   border-radius: 4px;
   font-weight: bold;
 }
-.button_active {
+button:enabled {
   will-change: transform, box-shadow;
   transition: 60ms;
 }
-.button_active:hover {
+button:enabled:hover {
   transform: translateY(-2px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
-.grupo {
+section {
   margin: 8px 0;
   padding: 8px;
-}
-.grupo_level1 {
   border: none;
 }
-.grupo_level2 {
+section section {
   border: 1px inset;
   border-radius: 4px;
 }
-.titulo {
+h1 {
   margin: 0 0 0.5em;
   line-height: 1em;
 }
-h1 {
+section h1 {
   font-size: 1.44rem;
 }
-h2 {
+section section h1 {
   font-size: 1.2rem;
 }
-.checkbox, .radio {
+input[type="checkbox"], input[type="radio"] {
   display: none;
 }
-.checkbox + label::before, .radio + label::before {
+input[type="checkbox"] + label::before, input[type="radio"] + label::before {
   content: "✓";
   display: inline-block;
   font-size: 1rem;
@@ -65,10 +63,10 @@ h2 {
   color: transparent;
   text-align: center;
 }
-.checkbox:checked + label::before, .radio:checked + label::before {
+input[type="checkbox"]:checked + label::before, input[type="radio"]:checked + label::before {
   color: initial;
 }
-.checkbox + label::before {
+input[type="checkbox"] + label::before {
   content: "✓";
   width: 0.7em;
   height: 0.7em;
@@ -76,14 +74,14 @@ h2 {
   margin: 0.15em;
   margin-right: calc(0.15em + 0.5ex);
 }
-.radio + label::before {
+input[type="radio"] + label::before {
   content: "●";
   width: 1em;
   height: 1em;
   line-height: 0.9em;
   border-radius: 100%;
 }
-.input, .output {
+input, output {
   border: none;
   border-bottom: 1px solid;
   text-align: right;

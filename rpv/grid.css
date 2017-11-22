@@ -16,20 +16,20 @@ body {
 .hero {
   grid-area: hero;
 }
-.header, .footer {
+header, footer {
   display: grid;
   grid-template-columns: repeat(3, auto);
   align-items: center;
   justify-content: space-evenly;
 }
-.header {
+header {
   display: none;
   grid-area: header;
 }
-.pagina {
+article {
   grid-area: pagina;
 }
-.footer {
+footer {
   grid-area: footer;
 }
 @media (min-width: 640px) {
@@ -37,13 +37,13 @@ body {
     grid-template: "header header header" auto "hero hero hero" 4rem ". pagina. " 1fr ". . ." minmax(0, 4rem) "footer footer footer" auto / auto minmax(320px, 640px) auto;
     grid-row-gap: 16px;
   }
-  .header {
+  header {
     display: grid;
   }
-  .header, .pagina, .footer {
+  header, article, footer {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.38);
   }
-  .pagina {
+  article {
     border-radius: 8px;
   }
 }

@@ -1,501 +1,320 @@
 /* global hyperHTML */
-window.addEventListener('load', () => {
-	const { bind, wire } = hyperHTML;
+const { bind, wire } = hyperHTML;
 
-	class Paginacao {
-		constructor(userProps) {
-			const props = Object.assign({ atual: 0 }, userProps);
-			Object.assign(this, props);
-			this.eventHandlers = new Map();
-			this.handleEvent = this.handleEvent.bind(this);
-			this.on('previous', this.onPrevious.bind(this));
-			this.on('next', this.onNext.bind(this));
-		}
+const store = (() => {
+	let subscribers = [];
+	const subscribe = subscriber => {
+		subscribers.push(subscriber);
+		return () => {
+			subscribers = subscribers.filter(s => s !== subscriber);
+		};
+	};
 
-		handleEvent(type) {
-			return evt => {
-				if (this.eventHandlers.has(type)) {
-					this.eventHandlers.get(type).forEach(handler => handler(evt));
-				}
-			};
-		}
+	let state;
+	const getState = () => state;
+	const setState = newState => {
+		state = newState;
+		console.log('State:', state);
+		subscribers.forEach(subscriber => subscriber());
+	};
+	return { getState, setState, subscribe };
+})();
 
-		on(type, handler) {
-			if (! this.eventHandlers.has(type)) {
-				this.eventHandlers.set(type, []);
-			}
-			const handlers = this.eventHandlers.get(type);
-			handlers.push(handler);
-			return () => this.eventHandlers.set(type, handlers.filter(h => h !== handler));
-		}
+store.setState({
+	'paginaAtual': 0,
 
-		onNext() {
-			const [next] = this.proximasPaginas();
-			if (typeof next === 'undefined') return;
-			this.atual = this.paginas.indexOf(next);
-			this.handleEvent('change')({});
-		}
+	'qtd-beneficiarios': [1],
+	'atrasados': false,
+	'ajg': false,
+	'sucumbencia': false,
 
-		onPrevious() {
-			const [prev] = this.paginasAnteriores().reverse();
-			if (typeof prev === 'undefined') return;
-			this.atual = this.paginas.indexOf(prev);
-			this.handleEvent('change')({});
-		}
+	'metade': 'integral',
 
-		paginasAnteriores() {
-			return this.paginas.filter((pagina, i) => i < this.atual).filter(pagina => ! pagina.hidden);
-		}
+	'data-sucumbencia': undefined,
+	'pct-sucumbencia': [0],
+	'salarios-sucumbencia': [0],
 
-		proximasPaginas() {
-			return this.paginas.filter((pagina, i) => i > this.atual).filter(pagina => ! pagina.hidden);
-		}
+	'data-ajg': undefined,
+	'valor-ajg': [200],
 
-		render() {
-			const paginas = this.paginas.map((pagina, index) => {
-				const num = index + 1;
-				const id = `pagina_${num}`;
-				const classes = [
-					'pagina',
-					id,
-					index === this.atual ? 'pagina_atual' : 'pagina_outra',
-					pagina.hidden ? 'pagina_oculta' : 'pagina_ativa'
-				].join(' ');
-				return wire(pagina)`<section id=${id} class=${classes}>${pagina.render()}</section>`;
-			});
-			const paginasAnteriores = this.paginasAnteriores().length;
-			const proximasPaginas = this.proximasPaginas().length;
-			const classes = (ativo, extraClass) => ['button', ativo ? 'button_active' : 'button_inactive', extraClass].join(' ');
-			const obj1 = {}, obj2 = {};
-			const [anterior1, anterior2] = [obj1, obj2].map(obj => wire(obj)`<button class=${classes(paginasAnteriores > 0, 'button_prev')} disabled=${! paginasAnteriores > 0} onclick=${this.handleEvent('previous')}>Página anterior</button>`);
-			const [proxima1, proxima2] = [obj1, obj2].map(obj => wire(obj)`<button class=${classes(proximasPaginas > 0, 'button_next')} disabled=${! proximasPaginas > 0} onclick=${this.handleEvent('next')}>Próxima página</button>`);
-			const [info1, info2] = [obj1, obj2].map(obj => wire(obj)`Página ${paginasAnteriores + 1} de ${paginasAnteriores + 1 + proximasPaginas}`);
-			const cabecalho = wire(this)`<header class="header">${anterior1}${info1}${proxima1}</header>`;
-			const rodape = wire(this)`<footer class="footer">${anterior2}${info2}${proxima2}</footer>`;
-			return wire(this)`<div class="hero">${this.title}</div>${cabecalho}${paginas}${rodape}`;
-		}
-	}
+	'data-base': undefined,
+	'principal': [0],
+	'total': [0],
+	'tipo-meses': 'qtd',
+	'meses-anterior': [0],
+	'meses-atual': [0],
+	'mes-inicial': undefined,
+	'mes-final': undefined,
+	'incluir-13o': true,
+	'anterior': [0],
+	'atual': [0],
 
-	class Grupo {
-		get header() {
-			if (! this._header) {
-				const header = document.createElement(`h${this.level}`);
-				header.className = 'titulo';
-				header.textContent = this.title;
-				this._header = header;
-			}
-			return this._header;
-		}
+	'contrato': false,
+	'pct-contratuais': [0],
 
-		constructor(userProps) {
-			const props = Object.assign({ hidden: false }, userProps);
-			Object.assign(this, props);
-			this.level = 1;
-		}
-
-		render() {
-			return wire(this)`<section class=${['grupo', `grupo_level${this.level}`].join(' ')} style=${this.hidden ? 'display: none;' : ''}>${this.header}${this.items.map(item => {
-				if (item instanceof Grupo) {
-					item.level = this.level + 1;
-				}
-				return item.render();
-			})}</section>`;
-		}
-	}
-
-	class Component {
-
-		constructor(props) {
-			this.defaultValue = '';
-			this.value = '';
-			Object.assign(this, props);
-			this.eventHandlers = new Map();
-			this.handleEvent = this.handleEvent.bind(this);
-		}
-
-		handleEvent(evt) {
-			const { type } = evt;
-			if (this.eventHandlers.has(type)) {
-				this.eventHandlers.get(type).forEach(handler => handler(evt));
-			}
-		}
-
-		on(type, handler) {
-			if (! this.eventHandlers.has(type)) {
-				this.eventHandlers.set(type, []);
-			}
-			const handlers = this.eventHandlers.get(type);
-			handlers.push(handler);
-			return () => this.eventHandlers.set(type, handlers.filter(h => h !== handler));
-		}
-
-		renderCheckbox() {
-			return wire(this)`<input id=${this.id} type="checkbox" class=${[this.id, 'checkbox'].join(' ')} checked=${this.value} onchange=${this.handleEvent}>`;
-		}
-
-		renderInput() {
-			return wire(this)`<input id=${this.id} size=${this.size} maxlength=${this.size} placeholder=${this.defaultValue} class=${[this.id, 'input', this.cssClass].join(' ')} value=${this.value} oninput=${this.handleEvent}>`;
-		}
-
-		renderLabel() {
-			return wire(this)`<label for=${this.id}>${this.text}</label>`;
-		}
-
-		renderOutput() {
-			return wire(this)`<input id=${this.id} disabled size=${this.size} value=${this.value} class=${[this.id, 'output', this.cssClass].join(' ')}>`;
-		}
-	}
-
-	class LabelInput extends Component {
-		render() {
-			return wire(this)`${this.renderLabel()}<br>${this.renderInput()}<br>`;
-		}
-	}
-
-	class LabelOutput extends Component {
-		render() {
-			return wire(this)`${this.renderLabel()}<br>${this.renderOutput()}<br>`;
-		}
-	}
-
-	class CampoBool extends Component {
-		constructor(userProps) {
-			const props = Object.assign({}, userProps);
-			super(props);
-			this.on('change', this.onChange.bind(this));
-		}
-
-		onChange(evt) {
-			const { target } = evt, { checked } = target;
-			this.value = checked;
-		}
-
-		render() {
-			return wire(this)`${this.renderCheckbox()} ${this.renderLabel()}<br>`;
-		}
-	}
-
-	class CampoData extends LabelInput {
-		get cssClass() { return 'input_data'; }
-		get size() { return 10; }
-
-		constructor(userProps) {
-			const props = Object.assign({ defaultValue: 'dd/mm/aaaa' }, userProps);
-			super(props);
-			this.on('input', this.onInput.bind(this));
-		}
-
-		onInput(evt) {
-			const { target } = evt, { value } = target;
-			const sanitized = value.replace(/\D/g, '');
-			if (sanitized.length < 3) {
-				target.value = sanitized;
-			} else if (sanitized.length < 5) {
-				target.value = [sanitized.slice(0, 2), sanitized.slice(2)].join('/');
-			} else {
-				target.value = [sanitized.slice(0, 2), sanitized.slice(2, 4), sanitized.slice(4)].join('/');
-			}
-			this.value = target.value;
-		}
-	}
-
-	class CampoMesAno extends LabelInput {
-		get cssClass() { return 'input_mes-ano'; }
-		get size() { return 7; }
-
-		constructor(userProps) {
-			const props = Object.assign({ defaultValue: 'mm/aaaa' }, userProps);
-			super(props);
-			this.on('input', this.onInput.bind(this));
-		}
-
-		onInput(evt) {
-			const { target } = evt, { value } = target;
-			const sanitized = value.replace(/\D/g, '');
-			if (sanitized.length < 3) {
-				target.value = sanitized;
-			} else {
-				target.value = [sanitized.slice(0, 2), sanitized.slice(2)].join('/');
-			}
-			this.value = target.value;
-		}
-	}
-
-	class CampoMoeda extends LabelInput {
-		get cssClass() { return 'input_moeda'; }
-		get size() { return 14; }
-
-		constructor(userProps) {
-			const props = Object.assign({ defaultValue: '0,00' }, userProps);
-			super(props);
-			this.on('input', this.onInput.bind(this));
-		}
-
-		onInput(evt) {
-			const { target } = evt, { value } = target;
-			const sanitized = value.replace(/\D/g, '');
-			const num = Number(sanitized) / 100;
-			if (num === 0) {
-				target.value = '';
-			} else {
-				target.value = num.toLocaleString('pt-br', {
-					useGrouping: true,
-					minimumIntegerDigits: 1,
-					minimumFractionDigits: 2,
-					maximumFractionDigits: 2
-				});
-			}
-			this.value = target.value;
-		}
-	}
-
-	class CampoPorcentagem extends Component {
-		get cssClass() { return 'input_pct'; }
-		get size() { return 3; }
-
-		constructor(userProps) {
-			const props = Object.assign({ defaultValue: '0' }, userProps);
-			super(props);
-			this.on('input', this.onInput.bind(this));
-		}
-
-		onInput(evt) {
-			const { target } = evt, { value } = target;
-			const sanitized = value.replace(/\D/g, '');
-			const num = Number(sanitized) / 100;
-			if (num === 0) {
-				target.value = '';
-			} else {
-				target.value = (num * 100).toLocaleString('pt-br', {
-					useGrouping: false,
-					minimumIntegerDigits: 1,
-					maximumFractionDigits: 0
-				});
-			}
-			this.value = target.value;
-		}
-
-		render() {
-			return wire(this)`${this.renderLabel()}<br>${this.renderInput()}%<br>`;
-		}
-	}
-
-	class CampoRadio extends Component {
-		constructor(userProps) {
-			const props = Object.assign({}, userProps);
-			super(props);
-			this.on('change', this.onChange.bind(this));
-		}
-
-		onChange(evt) {
-			this.value = evt.target.value;
-		}
-
-		render() {
-			const options = this.options.map((option, index) => {
-				const id = `${this.name}_${index}`;
-				return wire()`<input type="radio" id=${id} name=${this.name} class=${['radio', this.name].join(' ')} value=${option.value} checked=${option.value === this.value} onchange=${this.handleEvent}> <label for=${id}>${option.text}</label><br>`;
-			});
-			return wire(this)`${options}`;
-		}
-	}
-
-	class CampoQtd extends LabelInput {
-		get cssClass() { return 'input_qtd'; }
-		get size() { return 3; }
-
-		constructor(userProps) {
-			const props = Object.assign({ defaultValue: '0' }, userProps);
-			super(props);
-			this.on('input', this.onInput.bind(this));
-		}
-
-		onInput(evt) {
-			const { target } = evt, { value } = target;
-			const sanitized = value.replace(/\D/g, '');
-			target.value = sanitized;
-			this.value = target.value;
-		}
-	}
-
-	class SaidaMoeda extends LabelOutput {
-		get cssClass() { return 'output_moeda'; }
-		get size() { return 14; }
-
-		constructor(userProps) {
-			const props = Object.assign({ value: '0,00' }, userProps);
-			super(props);
-		}
-
-	}
-
-	const qtdBeneficiarios = new CampoQtd({ id: 'calculo__qtd-beneficiarios', text: 'Quantidade de beneficiários:', defaultValue: '1' });
-	const dataBase = new CampoMesAno({ id: 'contadoria__data-base', text: 'Os valores foram calculados até:' });
-	const principal = new CampoMoeda({ id: 'contadoria__principal', text: 'Principal corrigido:' });
-	const juros = new SaidaMoeda({ id: 'contadoria__juros', text: 'Juros:' });
-	const total = new CampoMoeda({ id: 'contadoria__total', text: 'Total:' });
-	const opcaoMeses = new CampoRadio({
-		name: 'contadoria__meses',
-		options: [
-			{ value: 'qtd', text: 'Informar quantidade de meses' },
-			{ value: 'inicial-final', text: 'Informar mês inicial e final' },
-		],
-		value: 'qtd'
-	});
-	const qtdAnterior = new CampoQtd({ id: 'contadoria__qtd-anterior', text: 'Competências anos anteriores:' });
-	const qtdAtual = new CampoQtd({ id: 'contadoria__qtd-atual', text: 'Competências ano atual:' });
-	const mesInicial = new CampoMesAno({ id: 'contadoria__mes-inicial', text: 'Mês inicial:' });
-	const mesFinal = new CampoMesAno({ id: 'contadoria__mes-final', text: 'Mês final:' });
-	const decimo = new CampoBool({ id: 'contadoria__decimo', text: 'Incluir 13º', value: true });
-	const anterior = new CampoMoeda({ id: 'contadoria__anterior', text: 'Competências anos anteriores - total:' });
-	const atual = new CampoMoeda({ id: 'contadoria__atual', text: 'Competências ano atual - total:' });
-	const dataSucumbencia = new CampoData({ id: 'sucumbencia__data', text: 'Data da decisão que fixou honorários sucumbenciais:' });
-	const pctSucumbencia = new CampoPorcentagem({ id: 'sucumbencia__pct', text: 'Porcentagem:' });
-	const salariosSucumbencia = new CampoQtd({ id: 'sucumbencia__salarios', text: 'Quantidade de salários mínimos caso porcentagem seja menor:' });
-	const metade = new CampoRadio({
-		name: 'metade',
-		options: [
-			{ value: 'integral', text: 'Integral' },
-			{ value: 'metade', text: 'Metade' },
-		],
-		value: 'integral'
-	});
-	const sentAtrasados = new CampoBool({ id: 'sentenca__atrasados', text: 'Atrasados' });
-	const sentAJG = new CampoBool({ id: 'sentenca__ajg', text: 'Ressarcimento dos honorários periciais' });
-	const sentSucumbencia = new CampoBool({ id: 'sentenca__sucumbencia', text: 'Honorários de sucumbência' });
-	const dataHonPer = new CampoData({ id: 'ajg__data', text: 'Data de solicitação do pagamento:' });
-	const valorHonPer = new CampoMoeda({ id: 'ajg__valor', text: 'Valor requisitado:', defaultValue: '200,00' });
-
-	const meses = new Grupo({
-		id: 'meses',
-		title: 'Quantidade de meses',
-		items: [
-			qtdAnterior,
-			qtdAtual,
-		]
-	});
-	const inicialFinal = new Grupo({
-		id: 'inicial-final',
-		title: 'Mês inicial e final',
-		hidden: true,
-		items: [
-			mesInicial,
-			mesFinal,
-			decimo,
-		]
-	});
-	const contadoria = new Grupo({
-		id: 'contadoria',
-		hidden: true,
-		title: 'Cálculo da contadoria',
-		items: [
-			dataBase,
-			principal,
-			juros,
-			total,
-			opcaoMeses,
-			meses,
-			inicialFinal,
-			anterior,
-			atual,
-		]
-	});
-	const ajg = new Grupo({
-		id: 'ajg',
-		hidden: true,
-		title: 'Ressarcimento dos honorários periciais',
-		items: [
-			metade
-		]
-	});
-	const sucumbencia = new Grupo({
-		title: 'Honorários de sucumbência',
-		hidden: true,
-		items: [
-			dataSucumbencia,
-			pctSucumbencia,
-			salariosSucumbencia
-		]
-	});
-
-	const sentenca = new Grupo({
-		id: 'sentenca',
-		title: 'Sentença / Acórdão',
-		items: [
-			sentAtrasados,
-			sentAJG,
-			// ajg,
-			sentSucumbencia,
-			// sucumbencia,
-		]
-	});
-
-	const periciais = new Grupo({
-		id: 'periciais',
-		hidden: true,
-		title: 'Honorários periciais',
-		items: [
-			dataHonPer,
-			valorHonPer,
-		]
-	});
-
-	const pagina1 = new Grupo({
-		id: 'pagina1',
-		title: 'Dados da condenação',
-		items: [
-			qtdBeneficiarios,
-			sentenca,
-		]
-	});
-
-	const formulario = new Paginacao({
-		title: 'Cálculo para preenchimento de ofícios requisitórios',
-		paginas: [
-			pagina1,
-			ajg,
-			sucumbencia,
-			periciais,
-			contadoria
-		]
-	});
-
-	const update = () => bind(document.body)`
-    ${formulario.render()}
-  `;
-
-	sentAtrasados.on('change', evt => {
-		const { target } = evt, { checked } = target;
-		contadoria.hidden = ! checked;
-		update();
-	});
-
-	sentAJG.on('change', evt => {
-		const { target } = evt, { checked } = target;
-		ajg.hidden = ! checked;
-		periciais.hidden = ! checked;
-		update();
-	});
-
-	sentSucumbencia.on('change', evt => {
-		const { target } = evt, { checked } = target;
-		sucumbencia.hidden = ! checked;
-		update();
-	});
-
-	opcaoMeses.on('change', evt => {
-		const { target } = evt, { value } = target;
-		if (value === 'qtd') {
-			meses.hidden = false;
-			inicialFinal.hidden = true;
-		} else if (value === 'inicial-final') {
-			meses.hidden = true;
-			inicialFinal.hidden = false;
-		}
-		update();
-	});
-
-	formulario.on('change', update);
-
-	update();
+	'qtd-advogados': [1],
 });
+
+const modifyStore = (name, f) => {
+	const state = store.getState();
+	const value = state[name];
+	store.setState(Object.assign({}, state, { [name]: f(value) }));
+};
+const putStore = (name, value) => modifyStore(name, () => value);
+const maybePutStore = (name, value, condition) =>	{
+	modifyStore(name, ([defaultValue]) => [defaultValue].concat(condition(value) ? [value] : []));
+};
+
+let indiceInput = 0;
+
+const MoedaType = (input = 0) => {
+	if (input instanceof MoedaType) return input;
+	const _valor = typeof input === 'number' ? input : parseInt(input.replace(/\D/g, '')) / 100;
+	return Object.assign(Object.create(MoedaType.prototype), { _valor });
+};
+MoedaType.prototype = {
+	constructor: MoedaType,
+	toString() {
+		if (isNaN(this._valor)) return '';
+		return this._valor.toLocaleString('pt-BR', {
+			style: 'decimal',
+			useGrouping: true,
+			minimumIntegerDigits: 1,
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	},
+	valueOf() {
+		return this._valor;
+	},
+};
+
+const onCheckboxChange = propriedade => ({ target: { checked } }) => {
+	putStore(propriedade, checked);
+};
+const onMesAnoChange = propriedade => ({ target: { value } }) => {
+	putStore(propriedade, value);
+};
+const onMesAnoInput = ({ target }) => {
+	let digitos = target.value.replace(/\D/g, '');
+	if (! /^(?:0[1-9]|1[0-2])/.test(digitos))digitos = digitos[0];
+	if (! /^[01]/.test(digitos)) digitos = '';
+	target.value = digitos.length < 3 ? digitos : [digitos.slice(0, 2), digitos.slice(2)].join('/');
+};
+const onMoedaChange = propriedade => ({ target: { value } }) => {
+	maybePutStore(propriedade, Number(MoedaType(value)), x => ! isNaN(x) && x !== 0);
+};
+const onMoedaInput = ({ target }) => {
+	const valor = Number(MoedaType(target.value));
+	target.value = valor === 0 ? '' : MoedaType(valor);
+};
+const onQtdChange = propriedade => ({ target: { value } }) => {
+	maybePutStore(propriedade, parseInt(value), x => ! isNaN(x));
+};
+const onQtdInput = ({ target }) => target.value = String(target.value.replace(/\D/g, ''));
+const onRadioChange = propriedade => ({ target: { value } }) => {
+	putStore(propriedade, value);
+};
+const onPrev = () => {
+	modifyStore('paginaAtual', x => x - 1);
+};
+const onNext = () => {
+	modifyStore('paginaAtual', x => x + 1);
+};
+
+/**
+ * @typedef {{(state: any): HTMLElement}} Wired
+ */
+
+/**
+ * Cria um checkbox com label que altera uma propriedade
+ * @param {string} propriedade Propriedade de store.getState()
+ * @param {string} texto Texto do label do elemento
+ * @returns {Wired} teste
+ */
+const Checkbox = (propriedade, texto) => {
+	const id = `input_${indiceInput++}`;
+	const onchange = onCheckboxChange(propriedade);
+	const label = wire()`<label for=${id}>${texto}</label>`;
+	return state => wire(label)`<input id=${id} type="checkbox" onchange=${onchange} checked=${state[propriedade]}>${label}<br>`;
+};
+
+const DiaMesAno = (propriedade, texto) => {
+	const id = `input_${indiceInput++}`;
+	// const onchange
+	const label = wire()`<label for=${id}>${texto}</label>`;
+	return state => wire(label)`${label}<br><input id=${id} type="text" maxlength="10" size="10" value=${state[propriedade]} placeholder="dd/mm/aaaa"><br>`;
+};
+
+const MesAno = (propriedade, texto) => {
+	const id = `input_${indiceInput++}`;
+	const onchange = onMesAnoChange(propriedade);
+	const label = wire()`<label for=${id}>${texto}</label>`;
+	return state => wire(label)`${label}<br><input id=${id} type="text" maxlength="7" size="7" onchange=${onchange} oninput=${onMesAnoInput} value=${state[propriedade]} placeholder="mm/aaaa"><br>`;
+};
+
+const Moeda = (propriedade, texto) => {
+	const id = `input_${indiceInput++}`;
+	const onchange = onMoedaChange(propriedade);
+	const label = wire()`<label for=${id}>${texto}</label>`;
+	return state => {
+		const [defaultValue, value] = state[propriedade];
+		return wire(label)`${label}<br><input id=${id} type="text" maxlength="14" size="14" onchange=${onchange} oninput=${onMoedaInput} value=${MoedaType(value || NaN)} placeholder=${MoedaType(defaultValue)}><br>`;
+	};
+};
+
+const Porcentagem = (propriedade, texto) => {
+	const id = `input_${indiceInput++}`;
+	// const onchange
+	const label = wire()`<label for=${id}>${texto}</label>`;
+	return state => {
+		const [defaultValue, value] = state[propriedade];
+		return wire(label)`${label}<br><input id=${id} type="text" maxlength="3" size="3" value=${value} placeholder=${defaultValue}>%<br>`;
+	};
+};
+
+const Qtd = (propriedade, texto) => {
+	const id = `input_${indiceInput++}`;
+	const onchange = onQtdChange(propriedade);
+	const label = wire()`<label for=${id}>${texto}</label>`;
+	return state => {
+		const [defaultValue, value] = state[propriedade];
+		return wire(label)`${label}<br><input id=${id} type="text" maxlength="3" size="3" onchange=${onchange} oninput=${onQtdInput} value=${value} placeholder=${defaultValue}><br>`;
+	};
+};
+
+const Radio = (propriedade, keysValues) => {
+	const onchange = onRadioChange(propriedade);
+	const options = Object.keys(keysValues).map(value => {
+		const texto = keysValues[value];
+		const id = `input_${indiceInput++}`;
+		return { id, value, texto };
+	});
+	return state => {
+		const renderedOptions = options.map(option => {
+			const { id, value, texto } = option;
+			return wire()`<input id=${id} type="radio" name=${propriedade} value=${value} onchange=${onchange} checked=${value === state[propriedade]}><label for=${id}>${texto}</label><br>`;
+		});
+		return wire(options)`${renderedOptions}`;
+	};
+};
+
+const SaidaMoeda2 = (texto, f) => state => wire()`<label>${texto}</label><br><input type="text" size="14" disabled value=${MoedaType(f(state))}><br>`;
+
+/**
+ * Cria um grupo de elementos
+ * @param {string} titulo Título do grupo
+ * @param {Wired[]} items Itens do grupo
+ * @returns {Wired}
+ */
+const Grupo3 = (titulo, items, dependeDe = null) => {
+	const h1 = wire()`<h1>${titulo}</h1>`;
+	return state => {
+		let visivel = true;
+		if (dependeDe === null) visivel = true;
+		else if (typeof dependeDe === 'function') visivel = dependeDe(state);
+		else visivel = state[dependeDe];
+		const style = visivel ? '' : 'display: none;';
+		return wire(h1)`<section style=${style}>${h1}${items.map(item => item(state))}</section>`;
+	};
+};
+
+const Pagina = (dependeDe, grupo) => state => {
+	let visivel = true;
+	if (dependeDe === null) visivel = true;
+	else if (typeof dependeDe === 'function') visivel = dependeDe(state);
+	else visivel = state[dependeDe];
+	const classes = []
+		.concat(visivel ? [] : ['pagina_oculta'])
+		.join(' ');
+	return wire(grupo)`<article class=${classes}>${grupo(state)}</article>`;
+};
+
+const Formulario2 = paginas => state => {
+	const paginaAtual = state.paginaAtual || 0;
+	const paginasRenderizadas = paginas.map(pagina => pagina(state));
+	const paginasVisiveis = paginasRenderizadas
+		.filter(pagina => ! pagina.classList.contains('pagina_oculta'))
+		.map((pagina, indice) => {
+			pagina.classList.add(indice === paginaAtual ? 'pagina_atual' : 'pagina_outra');
+			pagina.classList.remove(indice === paginaAtual ? 'pagina_outra' : 'pagina_atual');
+			return pagina;
+		});
+	const qtdPaginasVisiveis = paginasVisiveis.length;
+	const possivelVoltar = paginaAtual > 0;
+	const possivelAvancar = qtdPaginasVisiveis > paginaAtual + 1;
+	return wire(paginas)`
+<div class="hero">Cálculo para preenchimento de ofícios requisitórios</div>
+<header>
+	<button class="button_prev" disabled=${! possivelVoltar} onclick=${onPrev}>Página anterior</button>
+	Página ${paginaAtual + 1} de ${qtdPaginasVisiveis}
+	<button class="button_next" disabled=${! possivelAvancar} onclick=${onNext}>Próxima página</button>
+</header>
+${paginasRenderizadas}
+<footer>
+	<button class="button_prev" disabled=${! possivelVoltar} onclick=${onPrev}>Página anterior</button>
+	Página ${paginaAtual + 1} de ${qtdPaginasVisiveis}
+	<button class="button_next" disabled=${! possivelAvancar} onclick=${onNext}>Próxima página</button>
+</footer>
+	`; };
+
+const render = Formulario2([
+	Pagina(null, Grupo3('Dados da condenação', [
+		Qtd('qtd-beneficiarios', 'Quantidade de beneficiários:'),
+		Grupo3('Sentença / Acórdão', [
+			Checkbox('atrasados', 'Atrasados'),
+			Checkbox('ajg', 'Ressarcimento dos honorários periciais'),
+			Checkbox('sucumbencia', 'Honorários de sucumbência'),
+		]),
+	])),
+	Pagina('ajg', Grupo3('Ressarcimento dos honorários periciais', [
+		Radio('metade', {
+			'integral': 'Integral',
+			'metade': 'Metade',
+		}),
+	])),
+	Pagina('sucumbencia', Grupo3('Honorários de sucumbência', [
+		DiaMesAno('data-sucumbencia', 'Data da decisão que fixou honorários sucumbenciais:'),
+		Porcentagem('pct-sucumbencia', 'Porcentagem:'),
+		Qtd('salarios-sucumbencia', 'Quantidade de salários mínimos caso porcentagem seja menor:')
+	])),
+	Pagina('ajg', Grupo3('Honorários periciais', [
+		DiaMesAno('data-ajg', 'Data de solicitação do pagamento:'),
+		Moeda('valor-ajg', 'Valor requisitado:'),
+	])),
+	Pagina('atrasados', Grupo3('Cálculo da contadoria', [
+		MesAno('data-base', 'Os valores foram calculados até:'),
+		Moeda('principal', 'Principal corrigido:'),
+		SaidaMoeda2('Juros:', ({ principal, total }) => [principal, total].map(pair => pair.reduce((def, val) => val)).reduce((principal, total) => total - principal)),
+		Moeda('total', 'Total:'),
+		Radio('tipo-meses', {
+			'qtd': 'Informar quantidade de meses',
+			'inicial-final': 'Informar mês inicial e final'
+		}),
+		Grupo3('Quantidade de meses', [
+			Qtd('meses-anterior', 'Competências anos anteriores:'),
+			Qtd('meses-atual', 'Competências ano atual:'),
+		], state => state['tipo-meses'] === 'qtd'),
+		Grupo3('Mês inicial e final', [
+			MesAno('mes-inicial', 'Mês inicial'),
+			MesAno('mes-final', 'Mês final'),
+			Checkbox('incluir-13o', 'Incluir 13º'),
+		], state => state['tipo-meses'] === 'inicial-final'),
+		Moeda('anterior', 'Competências anos anteriores - total:'),
+		Moeda('atual', 'Competências ano atual - total:'),
+	])),
+	Pagina('atrasados', Grupo3('Honorários contratuais', [
+		Checkbox('contrato', 'Há contrato de honorários'),
+		Grupo3('Contrato de honorários', [
+			Porcentagem('pct-contratuais', 'Porcentagem:'),
+		], 'contrato'),
+	])),
+	Pagina(state => state['atrasados'] || state['sucumbencia'], Grupo3('Advogados', [
+		Qtd('qtd-advogados', 'Quantidade de advogados (preencher “1” quando for sociedade):'),
+	])),
+]);
+
+const update = () => bind(document.body)`${render(store.getState())}`;
+
+store.subscribe(update);
+update();
