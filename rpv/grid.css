@@ -32,6 +32,14 @@ article {
 footer {
   grid-area: footer;
 }
+.button_prev {
+  grid-row: 1;
+  grid-column: 1;
+}
+.button_next {
+  grid-row: 1;
+  grid-column: 3;
+}
 @media (min-width: 640px) {
   body {
     grid-template: "header header header" auto "hero hero hero" 4rem ". pagina. " 1fr ". . ." minmax(0, 4rem) "footer footer footer" auto / auto minmax(320px, 640px) auto;

@@ -22,6 +22,7 @@ const store = (() => {
 
 store.setState({
 	'paginaAtual': 0,
+	'paginaAlterada': true,
 
 	'qtd-beneficiarios': [1],
 	'atrasados': false,
@@ -55,21 +56,32 @@ store.setState({
 	'qtd-advogados': [1],
 });
 
+const POJO = {
+	fold: (...objs) => objs.reduce(
+		(obj, props) => Object.assign(obj, props),
+		{}
+	)
+};
+
+const manipulateProps = (props, f) => obj => f(...props.map(prop => obj[prop]));
+const createKV = (k, v) => ({ [k]: v });
 const modifyStore = (name, f) => {
-	const state = store.getState();
-	const value = state[name];
-	store.setState(Object.assign({}, state, { [name]: f(value) }));
+	const createNewProps = obj => createKV(name, manipulateProps([name], f)(obj));
+	const createNewState = state => POJO.fold(state, createNewProps(state));
+	store.setState(createNewState(store.getState()));
 };
 const putStore = (name, value) => modifyStore(name, () => value);
-const maybePutStore = (name, value, condition) =>	{
-	modifyStore(name, ([defaultValue]) => [defaultValue].concat(condition(value) ? [value] : []));
+const maybePutStore = (name, maybeValue) =>	{
+	modifyStore(name, ([defaultValue]) => [defaultValue].concat(maybeValue));
 };
 
 let indiceInput = 0;
 
 const MoedaType = (input = 0) => {
 	if (input instanceof MoedaType) return input;
-	const _valor = typeof input === 'number' ? input : parseInt(input.replace(/\D/g, '')) / 100;
+	const _valor = typeof input === 'number' ?
+		input :
+		parseInt(input.replace(/\D/g, '')) / 100;
 	return Object.assign(Object.create(MoedaType.prototype), { _valor });
 };
 MoedaType.prototype = {
@@ -89,66 +101,171 @@ MoedaType.prototype = {
 	},
 };
 
-const onCheckboxChange = propriedade => ({ target: { checked } }) => {
-	putStore(propriedade, checked);
+const salvarBoolean = propriedade => evt => {
+	putStore(propriedade, evt.target.checked);
 };
-const onMesAnoChange = propriedade => ({ target: { value } }) => {
-	putStore(propriedade, value);
+const salvarTexto = propriedade => evt => {
+	putStore(propriedade, evt.target.value);
+};
+const salvarValorTransformado = (propriedade, f) => evt => {
+	putStore(propriedade, f(evt.target.value));
+};
+const salvarValorTransformadoComDefault = (propriedade, f) => evt => {
+	maybePutStore(propriedade, f(evt.target.value));
 };
 const onMesAnoInput = ({ target }) => {
 	let digitos = target.value.replace(/\D/g, '');
 	if (! /^(?:0[1-9]|1[0-2])/.test(digitos))digitos = digitos[0];
 	if (! /^[01]/.test(digitos)) digitos = '';
-	target.value = digitos.length < 3 ? digitos : [digitos.slice(0, 2), digitos.slice(2)].join('/');
+	target.value = digitos.length < 3 ?
+		digitos :
+		[digitos.slice(0, 2), digitos.slice(2)].join('/');
 };
-const onMoedaChange = propriedade => ({ target: { value } }) => {
-	maybePutStore(propriedade, Number(MoedaType(value)), x => ! isNaN(x) && x !== 0);
-};
-const onMoedaInput = ({ target }) => {
-	const valor = Number(MoedaType(target.value));
-	target.value = valor === 0 ? '' : MoedaType(valor);
+const onMoedaChange = propriedade => salvarValorTransformadoComDefault(
+	propriedade,
+	texto => [Number(MoedaType(texto))].reduce(
+		(vazio, valor) => isNaN(valor) || valor === 0 ? vazio : [valor],
+		[]
+	)
+);
+const onMoedaInput = evt => {
+	const { target } = evt;
+	const { selectionStart, value } = target;
+	let cursorIndexReverse = 0;
+	for (let i = value.length - 1; i >= 0; i--) {
+		if (/\d/.test(value[i])) {
+			if (selectionStart <= i) cursorIndexReverse++;
+		}
+	}
+	const newValue = String(MoedaType(value));
+	let cursor = 0;
+	for (let i = newValue.length - 1; i >= 0; i--) {
+		if (/\d/.test(newValue[i])) {
+			if (cursorIndexReverse-- === 0) cursor = i + 1;
+		}
+	}
+	target.value = newValue === '0,00' ? '' : newValue;
+	target.selectionStart = cursor;
+	target.selectionEnd = cursor;
 };
 const onQtdChange = propriedade => ({ target: { value } }) => {
 	maybePutStore(propriedade, parseInt(value), x => ! isNaN(x));
 };
-const onQtdInput = ({ target }) => target.value = String(target.value.replace(/\D/g, ''));
-const onRadioChange = propriedade => ({ target: { value } }) => {
-	putStore(propriedade, value);
+const onQtdInput = ({ target }) => {
+	target.value = String(target.value.replace(/\D/g, ''));
 };
 const onPrev = () => {
-	modifyStore('paginaAtual', x => x - 1);
+	const mudarPagina = obj => createKV(
+		'paginaAtual',
+		manipulateProps(['paginaAtual'], x => x - 1)(obj)
+	);
+	const createNewState = state => POJO.fold(
+		state,
+		mudarPagina(state),
+		{ paginaAlterada: true }
+	);
+	store.setState(createNewState(store.getState()));
 };
 const onNext = () => {
-	modifyStore('paginaAtual', x => x + 1);
+	const mudarPagina = obj => createKV(
+		'paginaAtual',
+		manipulateProps(['paginaAtual'], x => x + 1)(obj)
+	);
+	const createNewState = state => POJO.fold(
+		state,
+		mudarPagina(state),
+		{ paginaAlterada: true }
+	);
+	store.setState(createNewState(store.getState()));
 };
 
 /**
- * @typedef {{(state: any): HTMLElement}} Wired
+ * @typedef {Object} VDomNode
+ * @prop {string} tag
+ * @prop {Object} attrs
+ * @prop {VDomNode[]|string[]} children
+ * @prop {{[string]: Function}} evts
  */
 
 /**
- * Cria um checkbox com label que altera uma propriedade
- * @param {string} propriedade Propriedade de store.getState()
- * @param {string} texto Texto do label do elemento
- * @returns {Wired} teste
+ * 
+ * @param {string} tag 
+ * @param {Object?} attrs 
+ * @param {VDomNode[]?|string[]?} children 
+ * @param {{[string]: Function}} evts 
+ * @return {VDomNode}
  */
-const Checkbox = (propriedade, texto) => {
+const html = (tag, attrs = {}, children = [], evts = {}) =>
+	({ tag, attrs, children, evts });
+
+/**
+ * 
+ * @param {HTMLElement} parentNode 
+ * @param {VDomNode|VDomNode[]|string|string[]} childOrChildren 
+ */
+const createElement = (parentNode, childOrChildren) => {
+	const children = Array.isArray(childOrChildren) ? childOrChildren : [childOrChildren];
+	const doc = parentNode.ownerDocument;
+	const childrenElements = children
+		.map(child => {
+			if (typeof child === 'string') return doc.createTextNode(child);
+			const { tag, attrs, children: subchildren, evts } = child;
+			const elt = Object.assign(doc.createElement(tag), attrs);
+			createElement(elt, subchildren);
+			Object.keys(evts).forEach(type => elt.addEventListener(type, evts[type]));
+			return elt;
+		});
+	childrenElements.forEach(child => parentNode.appendChild(child));
+	return childrenElements;
+};
+
+const Checkbox = (propriedade, texto) => parentNode => {
 	const id = `input_${indiceInput++}`;
-	const onchange = onCheckboxChange(propriedade);
-	const label = wire()`<label for=${id}>${texto}</label>`;
-	return state => wire(label)`<input id=${id} type="checkbox" onchange=${onchange} checked=${state[propriedade]}>${label}<br>`;
+	const onchange = salvarBoolean(propriedade);
+	const [input, label, br] = createElement(parentNode, [
+		html(
+			'input',
+			{
+				id,
+				type: 'checkbox',
+			},
+			[],
+			{
+				change: onchange,
+			}
+		),
+		html(
+			'label',
+			{
+				htmlFor: id
+			},
+			[
+				texto
+			]
+		),
+		html(
+			'br'
+		),
+	]);
+	let checked = false;
+	return state => {
+		if (state[propriedade] !== checked) {
+			checked = state[propriedade];
+			input.checked = checked;
+		}
+	};
 };
 
 const DiaMesAno = (propriedade, texto) => {
 	const id = `input_${indiceInput++}`;
-	// const onchange
+	const onchange = salvarTexto(propriedade);
 	const label = wire()`<label for=${id}>${texto}</label>`;
-	return state => wire(label)`${label}<br><input id=${id} type="text" maxlength="10" size="10" value=${state[propriedade]} placeholder="dd/mm/aaaa"><br>`;
+	return state => wire(label)`${label}<br><input id=${id} type="text" maxlength="10" size="10" onchange=${onchange} value=${state[propriedade]} placeholder="dd/mm/aaaa"><br>`;
 };
 
 const MesAno = (propriedade, texto) => {
 	const id = `input_${indiceInput++}`;
-	const onchange = onMesAnoChange(propriedade);
+	const onchange = salvarTexto(propriedade);
 	const label = wire()`<label for=${id}>${texto}</label>`;
 	return state => wire(label)`${label}<br><input id=${id} type="text" maxlength="7" size="7" onchange=${onchange} oninput=${onMesAnoInput} value=${state[propriedade]} placeholder="mm/aaaa"><br>`;
 };
@@ -184,7 +301,7 @@ const Qtd = (propriedade, texto) => {
 };
 
 const Radio = (propriedade, keysValues) => {
-	const onchange = onRadioChange(propriedade);
+	const onchange = salvarTexto(propriedade);
 	const options = Object.keys(keysValues).map(value => {
 		const texto = keysValues[value];
 		const id = `input_${indiceInput++}`;
@@ -199,7 +316,7 @@ const Radio = (propriedade, keysValues) => {
 	};
 };
 
-const SaidaMoeda2 = (texto, f) => state => wire()`<label>${texto}</label><br><input type="text" size="14" disabled value=${MoedaType(f(state))}><br>`;
+const SaidaMoeda = (texto, f) => state => wire()`<label>${texto}</label><br><input type="text" size="14" disabled value=${MoedaType(f(state))}><br>`;
 
 /**
  * Cria um grupo de elementos
@@ -207,7 +324,7 @@ const SaidaMoeda2 = (texto, f) => state => wire()`<label>${texto}</label><br><in
  * @param {Wired[]} items Itens do grupo
  * @returns {Wired}
  */
-const Grupo3 = (titulo, items, dependeDe = null) => {
+const Grupo = (titulo, items, dependeDe = null) => {
 	const h1 = wire()`<h1>${titulo}</h1>`;
 	return state => {
 		let visivel = true;
@@ -215,7 +332,7 @@ const Grupo3 = (titulo, items, dependeDe = null) => {
 		else if (typeof dependeDe === 'function') visivel = dependeDe(state);
 		else visivel = state[dependeDe];
 		const style = visivel ? '' : 'display: none;';
-		return wire(h1)`<section style=${style}>${h1}${items.map(item => item(state))}</section>`;
+		return wire()`<section style=${style}>${h1}${items.map(item => item(state))}</section>`;
 	};
 };
 
@@ -230,7 +347,7 @@ const Pagina = (dependeDe, grupo) => state => {
 	return wire(grupo)`<article class=${classes}>${grupo(state)}</article>`;
 };
 
-const Formulario2 = paginas => state => {
+const Formulario = paginas => state => {
 	const paginaAtual = state.paginaAtual || 0;
 	const paginasRenderizadas = paginas.map(pagina => pagina(state));
 	const paginasVisiveis = paginasRenderizadas
@@ -245,57 +362,57 @@ const Formulario2 = paginas => state => {
 	const possivelAvancar = qtdPaginasVisiveis > paginaAtual + 1;
 	return wire(paginas)`
 <div class="hero">Cálculo para preenchimento de ofícios requisitórios</div>
-<header>
-	<button class="button_prev" disabled=${! possivelVoltar} onclick=${onPrev}>Página anterior</button>
-	Página ${paginaAtual + 1} de ${qtdPaginasVisiveis}
-	<button class="button_next" disabled=${! possivelAvancar} onclick=${onNext}>Próxima página</button>
-</header>
 ${paginasRenderizadas}
 <footer>
-	<button class="button_prev" disabled=${! possivelVoltar} onclick=${onPrev}>Página anterior</button>
-	Página ${paginaAtual + 1} de ${qtdPaginasVisiveis}
 	<button class="button_next" disabled=${! possivelAvancar} onclick=${onNext}>Próxima página</button>
+	Página ${paginaAtual + 1} de ${qtdPaginasVisiveis}
+	<button class="button_prev" disabled=${! possivelVoltar} onclick=${onPrev}>Página anterior</button>
 </footer>
+<header>
+	<button tabindex="-1" class="button_next" disabled=${! possivelAvancar} onclick=${onNext}>Próxima página</button>
+	Página ${paginaAtual + 1} de ${qtdPaginasVisiveis}
+	<button tabindex="-1" class="button_prev" disabled=${! possivelVoltar} onclick=${onPrev}>Página anterior</button>
+</header>
 	`; };
 
-const render = Formulario2([
-	Pagina(null, Grupo3('Dados da condenação', [
+const render = Formulario([
+	Pagina(null, Grupo('Dados da condenação', [
 		Qtd('qtd-beneficiarios', 'Quantidade de beneficiários:'),
-		Grupo3('Sentença / Acórdão', [
+		Grupo('Sentença / Acórdão', [
 			Checkbox('atrasados', 'Atrasados'),
 			Checkbox('ajg', 'Ressarcimento dos honorários periciais'),
 			Checkbox('sucumbencia', 'Honorários de sucumbência'),
 		]),
 	])),
-	Pagina('ajg', Grupo3('Ressarcimento dos honorários periciais', [
+	Pagina('ajg', Grupo('Ressarcimento dos honorários periciais', [
 		Radio('metade', {
 			'integral': 'Integral',
 			'metade': 'Metade',
 		}),
 	])),
-	Pagina('sucumbencia', Grupo3('Honorários de sucumbência', [
+	Pagina('sucumbencia', Grupo('Honorários de sucumbência', [
 		DiaMesAno('data-sucumbencia', 'Data da decisão que fixou honorários sucumbenciais:'),
 		Porcentagem('pct-sucumbencia', 'Porcentagem:'),
 		Qtd('salarios-sucumbencia', 'Quantidade de salários mínimos caso porcentagem seja menor:')
 	])),
-	Pagina('ajg', Grupo3('Honorários periciais', [
+	Pagina('ajg', Grupo('Honorários periciais', [
 		DiaMesAno('data-ajg', 'Data de solicitação do pagamento:'),
 		Moeda('valor-ajg', 'Valor requisitado:'),
 	])),
-	Pagina('atrasados', Grupo3('Cálculo da contadoria', [
+	Pagina('atrasados', Grupo('Cálculo da contadoria', [
 		MesAno('data-base', 'Os valores foram calculados até:'),
 		Moeda('principal', 'Principal corrigido:'),
-		SaidaMoeda2('Juros:', ({ principal, total }) => [principal, total].map(pair => pair.reduce((def, val) => val)).reduce((principal, total) => total - principal)),
+		SaidaMoeda('Juros:', ({ principal, total }) => [principal, total].map(pair => pair.reduce((def, val) => val)).reduce((principal, total) => total - principal)),
 		Moeda('total', 'Total:'),
 		Radio('tipo-meses', {
 			'qtd': 'Informar quantidade de meses',
 			'inicial-final': 'Informar mês inicial e final'
 		}),
-		Grupo3('Quantidade de meses', [
+		Grupo('Quantidade de meses', [
 			Qtd('meses-anterior', 'Competências anos anteriores:'),
 			Qtd('meses-atual', 'Competências ano atual:'),
 		], state => state['tipo-meses'] === 'qtd'),
-		Grupo3('Mês inicial e final', [
+		Grupo('Mês inicial e final', [
 			MesAno('mes-inicial', 'Mês inicial'),
 			MesAno('mes-final', 'Mês final'),
 			Checkbox('incluir-13o', 'Incluir 13º'),
@@ -303,18 +420,27 @@ const render = Formulario2([
 		Moeda('anterior', 'Competências anos anteriores - total:'),
 		Moeda('atual', 'Competências ano atual - total:'),
 	])),
-	Pagina('atrasados', Grupo3('Honorários contratuais', [
+	Pagina('atrasados', Grupo('Honorários contratuais', [
 		Checkbox('contrato', 'Há contrato de honorários'),
-		Grupo3('Contrato de honorários', [
+		Grupo('Contrato de honorários', [
 			Porcentagem('pct-contratuais', 'Porcentagem:'),
 		], 'contrato'),
 	])),
-	Pagina(state => state['atrasados'] || state['sucumbencia'], Grupo3('Advogados', [
+	Pagina(state => state['atrasados'] || state['sucumbencia'], Grupo('Advogados', [
 		Qtd('qtd-advogados', 'Quantidade de advogados (preencher “1” quando for sociedade):'),
 	])),
 ]);
 
-const update = () => bind(document.body)`${render(store.getState())}`;
+const update = () => {
+	bind(document.body)`${render(store.getState())}`;
+	if (store.getState().paginaAlterada) {
+		document.querySelector('.pagina_atual input').focus();
+		const timer = setTimeout(() => {
+			clearTimeout(timer);
+			putStore('paginaAlterada', false);
+		}, 0);
+	}
+};
 
 store.subscribe(update);
 update();

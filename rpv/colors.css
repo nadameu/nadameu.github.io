@@ -55,7 +55,7 @@ input {
 input[disabled] {
   background: var(--output-light);
 }
-input[type="checkbox"] + label::before {
+/* input[type="checkbox"] + label::before {
   background: var(--primary-light);
 }
 input[type="checkbox"]:checked + label::before {
@@ -66,4 +66,4 @@ input[type="radio"] + label::before {
 }
 input[type="radio"]:checked + label::before {
   color: var(--primary-darker);
-}
+} */

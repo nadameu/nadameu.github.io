@@ -51,7 +51,7 @@ section h1 {
 section section h1 {
   font-size: 1.2rem;
 }
-input[type="checkbox"], input[type="radio"] {
+/* input[type="checkbox"], input[type="radio"] {
   display: none;
 }
 input[type="checkbox"] + label::before, input[type="radio"] + label::before {
@@ -80,7 +80,7 @@ input[type="radio"] + label::before {
   height: 1em;
   line-height: 0.9em;
   border-radius: 100%;
-}
+} */
 input, output {
   border: none;
   border-bottom: 1px solid;
