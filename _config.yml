@@ -1,0 +1,11 @@
+collections:
+  scripts:
+    output: true
+defaults:
+  - scope:
+      path: ""
+      type: scripts
+    values:
+      icone: noicon.svg
+      layout: script
+      eproc: false

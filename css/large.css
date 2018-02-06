@@ -1,0 +1,8 @@
+html {
+  background: #789;
+}
+body {
+  margin: 32px auto;
+  padding: 8px 32px 6rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}

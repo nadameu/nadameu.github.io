@@ -1,0 +1,11 @@
+- nome: Ferramentas e-Proc
+  repo: ferramentaseproc
+  icone: ferramentaseproc.png
+  desc: Facilidades para os sistemas e-Proc (V1 e V2)
+  url: https://eproc.trf4.jus.br/eproc2trf4/ajuda/plugin/
+
+- nome: Ferramentas BacenJud
+  repo: ferramentasbacenjud
+  icone: ferramentasbacenjud.svg
+  desc: Melhorias ao sistema BacenJud 2.0
+  url: https://eproc.trf4.jus.br/eproc2trf4/ajuda/plugin/bacenjud.php
