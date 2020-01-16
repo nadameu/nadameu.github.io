@@ -17,7 +17,7 @@ Clique no ícone para abrir o manual de instalação e utilização.
 {% for plugin in site.data.plugins %}
 <div class="icon">
 	<img src="images/{{ plugin.icone }}" alt="" width="32" height="32"/><br>
-	{{ plugin.nome }}<br>
+	<span>{{ plugin.nome }}</span><br>
 	<a href="{{ plugin.urldownload }}">Instalar</a><br>
 	<a href="{{ plugin.url }}" target="_blank" rel="noopener">
 		Ver manual<img src="images/newwindow.svg" alt=" " width="12" height="12"/>
