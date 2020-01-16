@@ -64,7 +64,7 @@ a {
   margin: 8px;
   max-width: 192px;
 }
-.icon > a {
+.icon > span, .icon > a {
   max-width: 128px;
   text-align: center;
   font-size: 12px;
@@ -81,4 +81,9 @@ a {
   font-size: 11px;
   background: #ffc;
   border: 1px solid black;
+}
+.icon > br + a {
+  margin-top: 1em;
+  color: #cde;
+  text-shadow: 1px 1px 0 #204040;
 }
