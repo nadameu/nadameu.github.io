@@ -3,9 +3,11 @@
   icone: ferramentaseproc.png
   desc: Facilidades para os sistemas e-Proc (V1 e V2)
   url: https://eproc.trf4.jus.br/eproc2trf4/modulos/trf4/ajuda/plugin/
+  urldownload: https://eproc.trf4.jus.br/eproc2trf4/modulos/trf4/ajuda/plugin/repo/eproc-latest.xpi
 
 - nome: Ferramentas BacenJud
   repo: ferramentasbacenjud
   icone: ferramentasbacenjud.svg
   desc: Melhorias ao sistema BacenJud 2.0
   url: https://eproc.trf4.jus.br/eproc2trf4/modulos/trf4/ajuda/plugin/bacenjud.php
+  urldownload: https://eproc.trf4.jus.br/eproc2trf4/modulos/trf4/ajuda/plugin/repo/ferramentasbacenjud-latest.xpi
