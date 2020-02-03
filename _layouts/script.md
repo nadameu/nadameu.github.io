@@ -1,8 +1,5 @@
 {% include header.html %}
-	<header style="text-align: center;">
-		<a href="/"><img src="/images/logo.svg" alt="nadameu &ndash; soluções web" width="207" height="72"/></a>
-	</header>
-	
+{% include logo_pequeno.html %}	
 <a href="/">Início</a> &gt; <a href="/#scripts">Scripts</a> &gt; {{ page.nome }}
 
 <h1>{{ page.nome }}</h1>
