@@ -21,7 +21,7 @@ Clique no ícone para abrir o manual de instalação e utilização.
 	<p>{{ plugin.desc }}</p>
 	<br><a href="{{ plugin.urldownload }}">Instalar</a>
 	<br><a href="{{ plugin.url }}" target="_blank" rel="noopener">
-		Ver manual<img src="images/newwindow.svg" alt=" " width="12" height="12"/>
+		Ver manual<img src="images/newwindow.svg" alt="" width="12" height="12"/>
 	</a>
 </div>
 {% endfor %}
@@ -41,7 +41,7 @@ Para utilizar os scripts é necessário possuir um dos seguintes gerenciadores d
 
 <div class="icon">
 <a href="/gerenciadores.html">
-<img src="images/tampermonkey.svg" alt=" " width="32" height="32"/>
+<img src="images/tampermonkey.svg" alt="" width="32" height="32"/>
 <br>
 Tampermonkey
 </a>
@@ -49,7 +49,7 @@ Tampermonkey
 
 <div class="icon">
 <a href="/gerenciadores.html">
-<img src="images/greasemonkey.svg" alt=" " width="32" height="32"/>
+<img src="images/greasemonkey.svg" alt="" width="32" height="32"/>
 <br>
 Greasemonkey
 </a>

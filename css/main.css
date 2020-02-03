@@ -91,6 +91,6 @@ a {
 }
 .icon > br + a {
   margin-top: 1em;
-  color: #cde;
+  color: white;
   text-shadow: 1px 1px 0 #204040;
 }
