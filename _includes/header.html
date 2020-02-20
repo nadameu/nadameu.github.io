@@ -3,7 +3,7 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>{% if page.path == 'index.md' %}nadameu &ndash; soluções web{% else %}{{ page.title }} &ndash; nadameu{% endif %}</title>
+	<title>{% if page.path == 'index.md' %}nadameu &ndash; soluções web{% else %}{% if page.nome %}{{ page.nome }}{% else %}{{ page.title }}{% endif %} &ndash; nadameu{% endif %}</title>
 
 	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
 
