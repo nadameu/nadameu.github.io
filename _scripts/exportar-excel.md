@@ -9,7 +9,7 @@ possui_manual: true
 Ao carregar a tela do processo, aparecerá o seguinte botão e, se necessário, o aviso:
 
 <figure>
-	<img src="../images/exportar-excel/botao.png" alt="" style="width: 100%; max-width: 542px;">
+	<img src="../images/exportar-excel/botao.png" alt="" style="width: 100%; max-width: 546px;">
 	<figcaption>Botão criado pelo script e aviso quando há mais de 100 eventos</figcaption>
 </figure>
 
