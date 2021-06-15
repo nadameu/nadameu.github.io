@@ -110,3 +110,10 @@ a {
   color: white;
   text-shadow: 1px 1px 0 #204040;
 }
+kbd {
+  background: #ddd;
+  border: 1px solid #333;
+  padding: 2px 4px;
+  border-radius: 4px;
+  box-shadow: inset 0px -1px 1px #666;
+}
