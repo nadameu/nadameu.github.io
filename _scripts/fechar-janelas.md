@@ -10,7 +10,7 @@ possui_manual: true
 Ao abrir um documento na tela do processo, aparecerá o seguinte botão na barra superior do _eproc_:
 
 <figure>
-	<img src="../images/fechar-janelas/botao.png" alt="" style="width: 100%; max-width: 230px;">
+	<img src="../images/fechar-janelas/botao.png" alt="" style="width: 100%; max-width: 230px; height: auto;" width="230" height="71">
 	<figcaption>Botão criado pelo script</figcaption>
 </figure>
 
