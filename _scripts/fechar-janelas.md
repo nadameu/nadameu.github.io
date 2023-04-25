@@ -7,10 +7,10 @@ file: fechar-janelas
 possui_manual: true
 ---
 
-Ao abrir um documento na tela do processo, aparecerá o seguinte botão:
+Ao abrir um documento na tela do processo, aparecerá o seguinte botão na barra superior do _eproc_:
 
 <figure>
-	<img src="../images/fechar-janelas/botao.png" alt="" style="width: 100%; max-width: 259px;">
+	<img src="../images/fechar-janelas/botao.png" alt="" style="width: 100%; max-width: 230px;">
 	<figcaption>Botão criado pelo script</figcaption>
 </figure>
 
