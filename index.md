@@ -2,12 +2,12 @@
 layout: index
 ---
 
-# Facilidades para a Justiça Federal da 4ª Região #
+# Facilidades para a Justiça Federal da 4ª Região
 
 Nesta página você irá encontrar algumas ferramentas para facilitar a utilização
 dos sistemas disponíveis para a Justiça Federal da 4ª Região.
 
-## Plugins para o Firefox ##
+## Plugins para o Firefox
 
 Se você usa o navegador Firefox, pode instalar os plugins abaixo.
 
@@ -27,15 +27,14 @@ Clique no ícone para abrir o manual de instalação e utilização.
 {% endfor %}
 </div>
 
-## Scripts para Firefox, Chrome, Edge, Safari e Opera ##
+## Scripts para Firefox, Chrome, Edge, Safari e Opera
 
 ### Antes de instalar
 
-A seguir você encontrará vários *scripts* que adicionam algumas funcionalidades
+A seguir você encontrará vários _scripts_ que adicionam algumas funcionalidades
 aos sistemas utilizados na Justiça Federal da 4ª Região.
 
-Para utilizar os scripts é necessário possuir um dos seguintes gerenciadores de
-*scripts* no seu navegador:
+Para utilizar os scripts é necessário possuir o gerenciador de _scripts_ Tampermonkey no seu navegador:
 
 <div class="desktop">
 
@@ -44,14 +43,6 @@ Para utilizar os scripts é necessário possuir um dos seguintes gerenciadores d
 <img src="images/tampermonkey.svg" alt="" width="32" height="32"/>
 <br>
 Tampermonkey
-</a>
-</div>
-
-<div class="icon">
-<a href="/gerenciadores.html">
-<img src="images/greasemonkey.svg" alt="" width="32" height="32"/>
-<br>
-Greasemonkey
 </a>
 </div>
 
