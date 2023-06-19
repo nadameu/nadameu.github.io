@@ -7,26 +7,6 @@ layout: index
 Nesta página você irá encontrar algumas ferramentas para facilitar a utilização
 dos sistemas disponíveis para a Justiça Federal da 4ª Região.
 
-## Plugins para o Firefox
-
-Se você usa o navegador Firefox, pode instalar os plugins abaixo.
-
-Clique no ícone para abrir o manual de instalação e utilização.
-
-<div class="desktop">
-{% for plugin in site.data.plugins %}
-<div class="icon">
-	<img src="images/{{ plugin.icone }}" alt="" width="32" height="32"/><br>
-	<span>{{ plugin.nome }}</span>
-	<p>{{ plugin.desc }}</p>
-	<br><a href="{{ plugin.urldownload }}">Instalar</a>
-	<br><a href="{{ plugin.url }}" target="_blank" rel="noopener">
-		Ver manual<img src="images/newwindow.svg" alt="" width="12" height="12"/>
-	</a>
-</div>
-{% endfor %}
-</div>
-
 ## Scripts para Firefox, Chrome, Edge, Safari e Opera
 
 ### Antes de instalar
@@ -81,6 +61,26 @@ Tampermonkey
 		<p>{{ script.desc }}</p>
 	</div>
 	{% endunless %}
+{% endfor %}
+</div>
+
+## Plugins para o Firefox
+
+Se você usa o navegador Firefox, pode instalar os plugins abaixo.
+
+Clique no ícone para abrir o manual de instalação e utilização.
+
+<div class="desktop">
+{% for plugin in site.data.plugins %}
+<div class="icon">
+	<img src="images/{{ plugin.icone }}" alt="" width="32" height="32"/><br>
+	<span>{{ plugin.nome }}</span>
+	<p>{{ plugin.desc }}</p>
+	<br><a href="{{ plugin.urldownload }}">Instalar</a>
+	<br><a href="{{ plugin.url }}" target="_blank" rel="noopener">
+		Ver manual<img src="images/newwindow.svg" alt="" width="12" height="12"/>
+	</a>
+</div>
 {% endfor %}
 </div>
 
