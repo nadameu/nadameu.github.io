@@ -1,11 +1,16 @@
 html {
   box-sizing: border-box;
 }
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 body {
   padding: 8px;
-  max-width: 720px;
+  max-width: 1200px;
   background: #eed;
+}
+img {
+  box-sizing: content-box;
 }
