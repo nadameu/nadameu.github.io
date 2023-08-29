@@ -117,3 +117,17 @@ kbd {
   border-radius: 4px;
   box-shadow: inset 0px -1px 1px #666;
 }
+output.corrigido p {
+  margin: 0;
+  padding: 0.5em 0;
+}
+output.corrigido p:first-child {
+  border-top: 1px solid #000;
+  margin-top: 3rem;
+}
+output.corrigido p:last-child {
+  border-bottom: 1px solid #000;
+}
+output.corrigido p + p {
+  border-top: 1px dotted #000;
+}

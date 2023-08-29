@@ -7,6 +7,12 @@ layout: index
 Nesta página você irá encontrar algumas ferramentas para facilitar a utilização
 dos sistemas disponíveis para a Justiça Federal da 4ª Região.
 
+## Colar texto de PDF
+
+Se você precisa copiar texto de documentos PDF para utilizar em editor de texto,
+porém ao colar verifica que as quebras de linha e parágrafos precisam ser ajustados manualmente,
+utilize [este link](/colar-texto-pdf) para acessar uma ferramenta que corrige o texto copiado.
+
 ## Scripts para Firefox, Chrome, Edge, Safari e Opera
 
 ### Antes de instalar
@@ -19,7 +25,7 @@ Para utilizar os scripts é necessário possuir o gerenciador de _scripts_ Tampe
 <div class="desktop">
 
 <div class="icon">
-<a href="/gerenciadores.html">
+<a href="/gerenciadores">
 <img src="images/tampermonkey.svg" alt="" width="32" height="32"/>
 <br>
 Tampermonkey
@@ -28,7 +34,7 @@ Tampermonkey
 
 </div>
 
-[Mais informações](/gerenciadores.html)
+[Mais informações](/gerenciadores)
 
 <h3 id="scripts">Scripts para o e-Proc</h3>
 
