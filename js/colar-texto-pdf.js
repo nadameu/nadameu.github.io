@@ -2,6 +2,7 @@ const textarea = document.getElementsByTagName("textarea")[0];
 const output = document.getElementsByTagName("output")[0];
 const checkbox = document.getElementsByTagName("input")[0];
 const copiar = document.getElementById("copiar");
+const limpar = document.querySelector('button[type="reset"]');
 const resultado = document.getElementsByClassName("resultado-copia")[0];
 const SEPARADOR = "CMHRLaZBtULfUbwwzPssTfJOGTZvsCNd";
 
@@ -23,6 +24,10 @@ copiar.addEventListener("click", () => {
     }
   );
 });
+limpar.addEventListener("click", () => {
+  textarea.focus();
+  setTimeout(render, 0);
+});
 render();
 function render() {
   resultado.hidden = true;
@@ -37,9 +42,11 @@ function render() {
   if (paragrafos.length === 0) {
     output.hidden = true;
     copiar.hidden = true;
+    limpar.hidden = true;
   } else {
     output.hidden = false;
     copiar.hidden = false;
+    limpar.hidden = false;
     output.append(
       ...paragrafos.map((x) => {
         const p = document.createElement("p");

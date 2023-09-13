@@ -15,12 +15,15 @@ exemplo, copiado de um documento PDF):
 parágrafos.</label
     >
 
-<textarea cols="120" rows="10" autofocus></textarea>
-
+<form>
+<textarea cols="120" rows="10" autofocus></textarea><br>
+<br>
 <button type="button" id="copiar">Copiar o texto abaixo</button>
+<button type="reset">Limpar</button>
+</form>
 
 <p class="resultado-copia"></p>
 
 <output class="corrigido"></output>
 
-<script src="/js/colar-texto-pdf.js"></script>
+<script src="/js/colar-texto-pdf.js?v=2.0"></script>
