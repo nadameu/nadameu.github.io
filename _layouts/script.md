@@ -6,7 +6,7 @@
 <p>{{ page.desc }}</p>
 
 <h2>Instalação</h2>
-<p>Se você ainda não possui um gerenciador de scripts instalado no seu navegador, <a href="/gerenciadores.html">veja instruções aqui</a>.</p>
+<p>Se você ainda não possui um gerenciador de scripts instalado no seu navegador, <a href="/gerenciadores">veja instruções aqui</a>.</p>
 <div class="desktop">
 	<div class="icon">
 		<a href="https://github.com/nadameu/{{ page.repo }}/raw/master/{{ page.file }}.user.js">

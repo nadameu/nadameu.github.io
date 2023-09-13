@@ -25,7 +25,7 @@ Para utilizar os scripts é necessário possuir o gerenciador de _scripts_ Tampe
 <div class="desktop">
 
 <div class="icon">
-<a href="/gerenciadores">
+<a href="/gerenciadores.html">
 <img src="images/tampermonkey.svg" alt="" width="32" height="32"/>
 <br>
 Tampermonkey
@@ -34,7 +34,7 @@ Tampermonkey
 
 </div>
 
-[Mais informações](/gerenciadores)
+[Mais informações](/gerenciadores.html)
 
 <h3 id="scripts">Scripts para o e-Proc</h3>
 
