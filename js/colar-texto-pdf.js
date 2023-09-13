@@ -9,6 +9,14 @@ const SEPARADOR = "CMHRLaZBtULfUbwwzPssTfJOGTZvsCNd";
 let paragrafos = [];
 
 textarea.addEventListener("input", render);
+textarea.addEventListener("paste", () => {
+  setTimeout(() => {
+    if (textarea.selectionEnd === textarea.value.length) {
+      textarea.value += "\n\n";
+      textarea.scrollTo({ top: textarea.selectionEnd + 2 });
+    }
+  }, 100);
+});
 checkbox.addEventListener("click", render);
 copiar.addEventListener("click", () => {
   navigator.clipboard.writeText(paragrafos.join("\n")).then(

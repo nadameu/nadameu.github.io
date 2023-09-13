@@ -8,7 +8,9 @@ title: Colar texto de PDF
 # Colar texto de PDF
 
 Cole na caixa abaixo o texto cujas quebras de linha deseja corrigir (por
-exemplo, copiado de um documento PDF):
+exemplo, copiado de um documento PDF).
+
+Se a opção a seguir estiver selecionada, insira linhas em branco para criar separação entre os parágrafos.
 
 <label
       ><input type="checkbox" checked /> Usar linhas em branco para separar
