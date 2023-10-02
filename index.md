@@ -7,11 +7,18 @@ layout: index
 Nesta página você irá encontrar algumas ferramentas para facilitar a utilização
 dos sistemas disponíveis para a Justiça Federal da 4ª Região.
 
-## Colar texto de PDF
+## [Colar texto de PDF](/colar-texto-pdf)
 
 Se você precisa copiar texto de documentos PDF para utilizar em editor de texto,
 porém ao colar verifica que as quebras de linha e parágrafos precisam ser ajustados manualmente,
 utilize [este link](/colar-texto-pdf) para acessar uma ferramenta que corrige o texto copiado.
+
+## [Verificação de números de processos](/numproc)
+
+Quando um número de processo recebido por e-mail ou telefone não aparenta ser válido, verifique
+com esta ferramenta se é possível descobrir qual o número correto.
+
+[Clique aqui para acessar](/numproc).
 
 ## Scripts para Firefox, Chrome, Edge, Safari e Opera
 
