@@ -4,7 +4,11 @@ title: Verificação de números de processos
 ---
 
 <style>
-.erro { color: red; }
+.erro { color: #a12; }
+
+.clickable { color: #14a; }
+
+.sucesso { color: #171; }
 
 li, .clickable { cursor: pointer; }
 
@@ -31,4 +35,4 @@ Caracteres separadores (traços e pontos) são opcionais.
 </form><br>
 <output></output>
 
-<script type="module" src="js/numproc.js"></script>
+<script type="module" src="js/numproc.js?v=1.1.0"></script>
