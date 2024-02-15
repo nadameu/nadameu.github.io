@@ -60,11 +60,28 @@ Tampermonkey
 {% endfor %}
 </div>
 
+### Scripts para o SEEU
+
+<div class="desktop">
+{% for script in site.scripts %}
+	{% if script.seeu %}
+	<div class="icon">
+		<a href="{{ script.url }}">
+		<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
+		<br>
+		{{ script.nome }}
+		</a>
+		<p>{{ script.desc }}</p>
+	</div>
+	{% endif %}
+{% endfor %}
+</div>
+
 ### Scripts para outros sistemas
 
 <div class="desktop">
 {% for script in site.scripts %}
-	{% unless script.eproc %}
+	{% unless script.eproc or script.seeu %}
 	<div class="icon">
 		<a href="{{ script.url }}">
 		<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
