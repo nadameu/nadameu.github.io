@@ -3,7 +3,7 @@ nome: Advogado dativo
 desc: Destaca a existência de advogado dativo
 seeu: true
 repo: greasemonkey
-file: seeu-advogado-dativo
+file: seeu-dativo
 possui_manual: true
 ---
 

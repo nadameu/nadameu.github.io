@@ -38,7 +38,7 @@ Destaque para movimentações realizadas por magistrados(as):
 Alteração da forma de apresentação dos documentos juntados, para facilitar a rápida identificação de seu conteúdo:
 
 <figure>
-	<img src="../images/seeu/movimentacoes-documentos.png" alt="" style="width: 100%; max-width: 757px; height: auto;" width="757" height="572">
+	<img src="../images/seeu/movimentacoes-documentos.png" alt="" style="width: 100%; max-width: 547px; height: auto;" width="547" height="428">
 	<figcaption>Forma de apresentação dos documentos juntados</figcaption>
 </figure>
 
@@ -48,7 +48,7 @@ As janelas podem ser fechadas automaticamente ao sair da tela de movimentação:
 
 <figure>
 	<img src="../images/seeu/movimentacoes-configurar.png" alt="" style="width: 100%; max-width: 417px; height: auto;" width="417" height="137">
-	<figcaption>Botão para configurar a forma de abertura de documentos</figcaption>
+	<figcaption>Opções para configurar a abertura de documentos e fechamento automático</figcaption>
 </figure>
 
 Permite fechar todas as janelas de documentos abertas, manualmente:
@@ -57,3 +57,5 @@ Permite fechar todas as janelas de documentos abertas, manualmente:
 	<img src="../images/seeu/movimentacoes-fechar.png" alt="" style="width: 100%; max-width: 424px; height: auto;" width="424" height="77">
 	<figcaption>Botão para fechar todas as janelas de documentos</figcaption>
 </figure>
+
+**Observação**: Após a instalação deste script, é necessário fazer novo login no SEEU para que o botão "Fechar janelas abertas" seja exibido corretamente.
