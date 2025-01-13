@@ -35,4 +35,4 @@ Caracteres separadores (traços e pontos) são opcionais.
 </form><br>
 <output></output>
 
-<script type="module" src="js/numproc.js?v=1.2.0"></script>
+<script src="js/numproc.js?v=1.3.0"></script>
