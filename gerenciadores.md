@@ -23,7 +23,7 @@ instalado:
 Caso não possua um gerenciador de _scripts_ instalado, selecione abaixo a
 versão, conforme o navegador que utiliza:
 
-<h3 class="titulo-icone"><img src="images/firefox.svg" alt="" width="32" height="32">Mozilla Firefox</h3>
+<h3 id="mozilla-firefox" class="titulo-icone"><img src="images/firefox.svg" alt="" width="32" height="32">Mozilla Firefox</h3>
 
 <div class="desktop">
 <div class="icon">
@@ -36,9 +36,9 @@ Instalar o Tampermonkey para Mozilla Firefox
 </div>
 </div>
 
-[Voltar para os scripts][scripts]
+[Voltar para os _scripts_][scripts]
 
-<h3 class="titulo-icone"><img src="images/chrome.svg" alt="" width="32" height="32">Google Chrome</h3>
+<h3 id="google-chrome" class="titulo-icone"><img src="images/chrome.svg" alt="" width="32" height="32">Google Chrome</h3>
 
 Nem todos os _scripts_ desta página foram testados com o Google Chrome. É
 provável que funcionem normalmente, porém em caso de erro, entre em contato
@@ -54,6 +54,14 @@ Instalar o Tampermonkey para Google Chrome
 </a>
 </div>
 </div>
+
+#### Erro ao instalar
+
+Problemas ao instalar o Tampermonkey no Google Chrome? Clique [aqui](erro-chrome#permissões-de-instalação).
+
+#### Configuração do Google Chrome
+
+Após a instalação do Tampermonkey, é preciso configurá-lo antes da primeira utilização. [Instruções aqui](erro-chrome#permissões-para-utilização-dos-scripts).
 
 [Voltar para os scripts][scripts]
 
@@ -98,6 +106,31 @@ Instalar o Tampermonkey no Opera
 </div>
 
 </div>
+
+[Voltar para os scripts][scripts]
+
+### Resolução de problemas
+
+#### Permissões no Chrome
+
+Caso você encontre problemas de permissão ao instalar o Tampermonkey no Google Chrome:
+
+<figure>
+	<img src="../images/tampermonkey/erro-permissao.png" alt="" style="width: 100%; max-width: 793px; height: auto;" width="793" height="292">
+	<figcaption>Erro ao instalar Tampermonkey</figcaption>
+</figure>
+
+Resolução:
+
+1. Clique no ícone da sua conta (ao lado direito dos 9 pontinhos, não aquele na barra superior);
+
+2. Selecione a opção "Sair":
+
+<figure>
+	<img src="../images/tampermonkey/sair.png" alt="" style="width: 100%; max-width: 496px; height: auto;" width="496" height="208">
+	<figcaption>Opções da conta do Google</figcaption>
+</figure>
+
 
 [Voltar para os scripts][scripts]
 
