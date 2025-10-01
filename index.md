@@ -20,6 +20,13 @@ com esta ferramenta se é possível descobrir qual o número correto.
 
 [Clique aqui para acessar](/numproc).
 
+## [Gerar link para consulta externa a processos do _eproc_](/link-eproc)
+
+Permite gerar um link para a consulta externa de processos do _eproc_, com valores pré-preenchidos,
+como número do processo e chave (opcional).
+
+[Clique aqui para acessar](/link-eproc).
+
 ## Scripts para Firefox, Chrome, Edge, Safari e Opera
 
 ### Antes de instalar
