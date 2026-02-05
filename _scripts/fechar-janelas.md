@@ -1,7 +1,7 @@
 ---
 nome: Fechar janelas abertas
 desc: Fecha as janelas de documentos que tenham sido abertas no processo
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: fechar-janelas
 possui_manual: true

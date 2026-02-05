@@ -1,7 +1,7 @@
 ---
 nome: Preenchimento dados baixa
 desc: Auxilia no preenchimento do formulário de baixa de processos
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: baixa
 possui_manual: true

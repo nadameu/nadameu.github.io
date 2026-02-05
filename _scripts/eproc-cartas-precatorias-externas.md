@@ -1,7 +1,7 @@
 ---
 nome: Cartas precatórias externas
 desc: Permite consultar cartas precatórias externas através do serviço www.jus.br
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: eproc-cartas-precatorias-externas
 possui_manual: true

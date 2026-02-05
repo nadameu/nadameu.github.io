@@ -1,7 +1,7 @@
 ---
 nome: Ações flutuantes
 desc: Permite ir rapidamente para o menu "Ações"
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: acoes-flutuantes
 possui_manual: true

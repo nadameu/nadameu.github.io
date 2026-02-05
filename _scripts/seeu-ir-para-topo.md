@@ -1,7 +1,7 @@
 ---
 nome: Ir para o topo
 desc: Acrescenta botão para facilitar ir para o início da página
-seeu: true
+sistema: seeu
 repo: greasemonkey
 file: seeu-ir-para-topo
 possui_manual: true

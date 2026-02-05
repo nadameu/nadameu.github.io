@@ -1,7 +1,7 @@
 ---
 nome: Separar em blocos
 desc: Permite a separação de processos em blocos para movimentação separada
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: separar-em-blocos
 possui_manual: true

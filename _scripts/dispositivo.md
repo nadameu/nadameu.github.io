@@ -1,7 +1,7 @@
 ---
 nome: Dispositivo
 desc: Rola diretamente para a parte dispositiva da sentença
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: dispositivo
 possui_manual: true

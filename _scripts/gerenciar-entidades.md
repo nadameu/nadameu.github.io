@@ -1,7 +1,7 @@
 ---
 nome: Gerenciar entidades
 desc: Permite filtrar entidades assistenciais
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: gerenciar-entidades
 possui_manual: true

@@ -1,7 +1,7 @@
 ---
 nome: Solicitações de pagamento em bloco
 desc: Permite a criação de solicitações de pagamento de peritos em bloco
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: ajg
 #icone: noicon.svg

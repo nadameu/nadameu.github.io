@@ -1,7 +1,7 @@
 ---
 nome: Último link clicado
 desc: Destaca o último link clicado
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: ultimo-link-clicado
 possui_manual: true

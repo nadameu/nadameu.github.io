@@ -1,7 +1,7 @@
 ---
 nome: Reabrir último processo
 desc: Cria botão para acessar facilmente o último processo aberto
-seeu: true
+sistema: seeu
 repo: greasemonkey
 file: seeu-reabrir-ultimo-processo
 possui_manual: true

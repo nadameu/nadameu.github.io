@@ -1,6 +1,7 @@
 ---
 nome: SEI!
 desc: Facilita a utilização do sistema SEI! do TRF4
+sistema: sei
 repo: sei
 file: sei
 possui_manual: true

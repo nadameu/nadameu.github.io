@@ -1,7 +1,7 @@
 ---
 nome: Movimentações
 desc: Melhoria na apresentação das movimentações do processo
-seeu: true
+sistema: seeu
 repo: greasemonkey
 file: seeu-movimentacoes
 possui_manual: true

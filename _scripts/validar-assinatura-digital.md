@@ -1,7 +1,7 @@
 ---
 nome: Validar assinatura digital
 desc: Envia documentos PDF para o site validar.iti.gov.br para validação de assinatura digital
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: validar-assinatura-digital
 possui_manual: true

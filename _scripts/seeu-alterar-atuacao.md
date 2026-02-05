@@ -1,7 +1,7 @@
 ---
 nome: Alterar atuação
 desc: Alterar a área de atuação no SEEU a partir da aba "Informações Gerais" de um processo
-seeu: true
+sistema: seeu
 repo: greasemonkey
 file: seeu-switch
 possui_manual: true

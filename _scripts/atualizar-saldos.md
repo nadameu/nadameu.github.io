@@ -1,7 +1,7 @@
 ---
 nome: Atualizar saldos
 desc: Atualiza o saldo de contas judiciais
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: atualizar-saldo
 possui_manual: true

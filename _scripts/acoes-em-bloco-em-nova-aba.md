@@ -1,7 +1,7 @@
 ---
 nome: Ações em bloco em nova aba
 desc: Permite que ações em bloco sejam abertas em nova aba, na lista de processos por localizador e no resultado do relatório geral.
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: acoes-bloco-nova-aba
 possui_manual: true

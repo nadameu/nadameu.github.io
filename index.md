@@ -50,28 +50,29 @@ Tampermonkey
 
 [Mais informações](/gerenciadores.html)
 
-<h3 id="scripts">Scripts para o e-Proc</h3>
+{% assign sorted = site.scripts | sort: 'nome' %}
+
+<h3 id="scripts">Scripts para o <i>eproc</i> da Justiça Federal da 4ª Região</h3>
 
 <div class="desktop">
-{% for script in site.scripts %}
-	{% if script.eproc %}
-	<div class="icon">
-		<a href="{{ script.url }}">
-		<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
-		<br>
-		{{ script.nome }}
-		</a>
-		<p>{{ script.desc }}</p>
-	</div>
-	{% endif %}
+{% assign sorted_eproc = sorted | where: 'sistema','eproc' %}
+{% for script in sorted_eproc %}
+<div class="icon">
+	<a href="{{ script.url }}">
+	<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
+	<br>
+	{{ script.nome }}
+	</a>
+	<p>{{ script.desc }}</p>
+</div>
 {% endfor %}
 </div>
 
 ### Scripts para o SEEU
 
 <div class="desktop">
-{% for script in site.scripts %}
-	{% if script.seeu %}
+{% assign sorted_seeu = sorted | where: 'sistema','seeu' %}
+{% for script in sorted_seeu %}
 	<div class="icon">
 		<a href="{{ script.url }}">
 		<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
@@ -80,15 +81,33 @@ Tampermonkey
 		</a>
 		<p>{{ script.desc }}</p>
 	</div>
-	{% endif %}
+{% endfor %}
+</div>
+
+### Scripts para o SEI! do TRF4
+
+<div class="desktop">
+{% assign sorted_sei = sorted | where: 'sistema','sei' %}
+{% for script in sorted_sei %}
+	<div class="icon">
+		<a href="{{ script.url }}">
+		<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
+		<br>
+		{{ script.nome }}
+		</a>
+		<p>{{ script.desc }}</p>
+	</div>
 {% endfor %}
 </div>
 
 ### Scripts para outros sistemas
 
 <div class="desktop">
-{% for script in site.scripts %}
-	{% unless script.eproc or script.seeu %}
+{% assign sorted_outros = sorted %}
+{% for script in sorted_outros %}
+{% unless script.sistema contains 'eproc' %}
+{% unless script.sistema contains 'seeu' %}
+{% unless script.sistema contains 'sei' %}
 	<div class="icon">
 		<a href="{{ script.url }}">
 		<img src="images/{{ script.icone }}" alt="" width="32" height="32"/>
@@ -97,7 +116,9 @@ Tampermonkey
 		</a>
 		<p>{{ script.desc }}</p>
 	</div>
-	{% endunless %}
+{% endunless %}
+{% endunless %}
+{% endunless %}
 {% endfor %}
 </div>
 

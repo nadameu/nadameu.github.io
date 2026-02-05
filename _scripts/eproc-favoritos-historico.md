@@ -1,7 +1,7 @@
 ---
 nome: Favoritos e histórico
 desc: Permite definir processos favoritos e visualizar o histórico de processos acessados
-eproc: true
+sistema: eproc
 repo: greasemonkey
 file: eproc-favoritos-historico
 possui_manual: true
