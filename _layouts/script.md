@@ -23,7 +23,7 @@
 {% endif %}
 
 <h2>Informações técnicas</h2>
-<p class="titulo-icone"><img src="/images/github.svg" width="16" height="16"><a href="https://github.com/nadameu/{{ page.repo }}" target="_blank" class="link-new-window">Código-fonte</a></p>
+<p class="titulo-icone"><img src="/images/github.svg" width="16" height="16"><a href="https://github.com/nadameu/{{ page.repo }}/blob/master/{{ page.file }}.user.js" target="_blank" class="link-new-window">Código-fonte</a></p>
 
 <p class="back"><a href="/#scripts">Voltar para os scripts</a></p>
 {% include footer.html %}
