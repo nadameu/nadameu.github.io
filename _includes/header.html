@@ -1,24 +1,23 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>
+      {% if page.path == 'index.md' %}nadameu &ndash; soluções web{% else %}{% if page.nome %}{{ page.nome }}{% else
+      %}{{ page.title }}{% endif %} &ndash; nadameu{% endif %}
+    </title>
 
-<head>
-	<meta charset="utf-8">
-	<title>{% if page.path == 'index.md' %}nadameu &ndash; soluções web{% else %}{% if page.nome %}{{ page.nome }}{% else %}{{ page.title }}{% endif %} &ndash; nadameu{% endif %}</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1" />
 
-	<meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+    <link rel="icon" type="image/png" href="/images/icons/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="/images/icons/favicon.svg" />
+    <link rel="shortcut icon" href="/images/icons/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="nadameu" />
+    <link rel="manifest" href="/images/icons/site.webmanifest" />
 
-	<link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png?v=2bQgwNa2bY">
-	<link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png?v=2bQgwNa2bY">
-	<link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png?v=2bQgwNa2bY">
-	<link rel="manifest" href="/images/icons/manifest.json?v=2bQgwNa2bY">
-	<link rel="mask-icon" href="/images/icons/safari-pinned-tab.svg?v=2bQgwNa2bY" color="#385470">
-	<link rel="shortcut icon" href="/images/icons/favicon.ico?v=2bQgwNa2bY">
-	<meta name="msapplication-config" content="/images/icons/browserconfig.xml?v=2bQgwNa2bY">
-	<meta name="theme-color" content="#385470">
-
-	<link rel="stylesheet" media="all" href="/css/main.css?v=0.3">
-	<link rel="stylesheet" media="screen" href="/css/screen.css?v=0.3">
-	<link rel="stylesheet" media="screen and (min-width: 720px)" href="/css/large.css?v=0.3">
-</head>
-
-<body>
+    <link rel="stylesheet" media="all" href="/css/main.css?v=0.3" />
+    <link rel="stylesheet" media="screen" href="/css/screen.css?v=0.3" />
+    <link rel="stylesheet" media="screen and (min-width: 1200px)" href="/css/large.css?v=0.3" />
+  </head>
+  <body>
