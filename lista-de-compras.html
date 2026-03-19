@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Lista de Compras - Google Drive Storage</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Organizador de Compras</h1>
+
+    <button id="authorize_button" onclick="handleAuthClick()">Entrar com Google</button>
+    <button id="signout_button" onclick="handleSignoutClick()" style="display: none">Sair</button>
+
+    <hr />
+
+    <div id="content" style="display: none">
+      <h3>A tua lista (JSON):</h3>
+      <textarea id="list_data" rows="10" cols="30">{"itens": ["Maçãs", "Pão"]}</textarea>
+      <br />
+      <button onclick="saveToDrive()">Guardar no Google Drive</button>
+      <button onclick="loadFromDrive()">Carregar do Drive</button>
+      <p id="status"></p>
+    </div>
+
+    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+
+    <script type="text/javascript">
+      // CONFIGURAÇÕES (Substitui aqui)
+      const CLIENT_ID = "1096305954579-0a3ji5c9a8p4bue1oho0j933uljkhb6h.apps.googleusercontent.com";
+      const API_KEY = "AIzaSyCZYm09mnGMMgeNYRW71ZfrJym1AwN4qgg";
+      const SCOPES = "https://www.googleapis.com/auth/drive.appdata";
+      const DISCOVERY_DOC = "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest";
+
+      let tokenClient;
+      let gapiInited = false;
+      let gisInited = false;
+      let fileId = null; // ID do ficheiro no Drive
+
+      // 1. Inicializar GAPI (API Client)
+      function gapiLoaded() {
+        gapi.load("client", async () => {
+          await gapi.client.init({ apiKey: API_KEY, discoveryDocs: [DISCOVERY_DOC] });
+          gapiInited = true;
+          maybeEnableButtons();
+        });
+      }
+
+      // 2. Inicializar GIS (Autenticação)
+      function gisLoaded() {
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: SCOPES,
+          callback: "",
+        });
+        gisInited = true;
+        maybeEnableButtons();
+      }
+
+      async function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+          document.getElementById("authorize_button").style.visibility = "visible";
+          if (window.localStorage.getItem("token")) {
+            const token = gapi.client.setToken(JSON.parse(window.localStorage.getItem("token")));
+            isAuthenticated();
+          }
+        }
+      }
+
+      // FUNÇÕES DE AUTENTICAÇÃO
+      function handleAuthClick() {
+        tokenClient.callback = async (credentials) => {
+          if (credentials.error !== undefined) throw credentials;
+          window.localStorage.setItem("token", JSON.stringify(credentials));
+          await isAuthenticated();
+        };
+        if (gapi.client.getToken() === null) {
+          tokenClient.requestAccessToken({ prompt: "consent" });
+        } else {
+          tokenClient.requestAccessToken({ prompt: "" });
+        }
+      }
+
+      async function isAuthenticated() {
+        document.getElementById("authorize_button").innerText = "Autenticado";
+        document.getElementById("signout_button").style.display = "block";
+        document.getElementById("content").style.display = "block";
+        await loadFromDrive();
+      }
+
+      async function isNotAuthenticated() {
+        document.getElementById("authorize_button").innerText = "Entrar com Google";
+        document.getElementById("signout_button").style.display = "none";
+        document.getElementById("content").style.display = "none";
+      }
+
+      function handleSignoutClick() {
+        const token = gapi.client.getToken();
+        if (token !== null) {
+          google.accounts.oauth2.revoke(token.access_token, (_done) => {
+            gapi.client.setToken("");
+            location.reload();
+          });
+        }
+      }
+
+      // FUNÇÃO PARA GUARDAR DADOS
+      async function saveToDrive() {
+        document.getElementById("status").innerText = "Iniciando gravação...";
+        const content = document.getElementById("list_data").value;
+        const metadata = {
+          name: "shopping_list.json",
+          mimeType: "application/json",
+          parents: ["appDataFolder"], // Pasta especial oculta
+        };
+
+        const file = new Blob([content], { type: "application/json" });
+        const form = new FormData();
+        form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+        form.append("file", file);
+
+        try {
+          let url = "https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart";
+          let method = "POST";
+
+          // Se o ficheiro já existe, atualizamos (PATCH) em vez de criar novo
+          if (fileId) {
+            url = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`;
+            method = "PATCH";
+          }
+
+          const response = await fetch(url, {
+            method: method,
+            headers: new Headers({ Authorization: "Bearer " + gapi.client.getToken().access_token }),
+            body: form,
+          });
+          const result = await response.json();
+          fileId = result.id;
+          document.getElementById("status").innerText = "Guardado com sucesso!";
+        } catch (err) {
+          console.error(err);
+        }
+      }
+
+      // FUNÇÃO PARA CARREGAR DADOS
+      async function loadFromDrive() {
+        document.getElementById("status").innerText = "Carregando dados...";
+        try {
+          // Procurar o ficheiro na pasta appDataFolder
+          const response = await gapi.client.drive.files.list({
+            spaces: "appDataFolder",
+            fields: "files(id, name)",
+            pageSize: 1,
+          });
+
+          const files = response.result.files;
+          if (files.length > 0) {
+            fileId = files[0].id;
+            // Obter o conteúdo do ficheiro
+            const contentResponse = await gapi.client.drive.files.get({
+              fileId: fileId,
+              alt: "media",
+            });
+            document.getElementById("list_data").value = JSON.stringify(contentResponse.result, null, 2);
+            document.getElementById("status").innerText = "Dados carregados!";
+          } else {
+            document.getElementById("status").innerText = "Nenhum ficheiro encontrado. Cria um novo!";
+          }
+        } catch (err) {
+          console.log({ resultado: err });
+          console.error(err);
+          if (err?.result?.error?.status === "UNAUTHENTICATED") {
+            await isNotAuthenticated();
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
