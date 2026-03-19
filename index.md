@@ -129,4 +129,4 @@ Tampermonkey
 E-mail/Google Chat: <a href="mailto:&#112;&#109;&#106;&#48;&#48;&#064;&#106;&#102;&#115;&#099;&#046;&#106;&#117;&#115;&#046;&#098;&#114;">&#112;&#109;&#106;&#48;&#48;&#064;&#106;&#102;&#115;&#099;&#046;&#106;&#117;&#115;&#046;&#098;&#114;</a>
 </address>
 
-[Política de privacidade e termos de serviço](/politica-termos)
+[Política de privacidade e termos de serviço](https://www.nadameu.com.br/politica-termos)
