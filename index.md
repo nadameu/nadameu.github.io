@@ -39,7 +39,7 @@ Para utilizar os scripts é necessário possuir o gerenciador de _scripts_ Tampe
 <div class="desktop">
 
 <div class="icon">
-<a href="/gerenciadores.html">
+<a href="/gerenciadores">
 <img src="images/tampermonkey.svg" alt="" width="32" height="32"/>
 <br>
 Tampermonkey
@@ -48,7 +48,7 @@ Tampermonkey
 
 </div>
 
-[Mais informações](/gerenciadores.html)
+[Mais informações](/gerenciadores)
 
 {% assign sorted = site.scripts | sort: 'nome' %}
 
@@ -128,3 +128,5 @@ Tampermonkey
 1ª Vara Federal de Itajaí/SC<br>
 E-mail/Google Chat: <a href="mailto:&#112;&#109;&#106;&#48;&#48;&#064;&#106;&#102;&#115;&#099;&#046;&#106;&#117;&#115;&#046;&#098;&#114;">&#112;&#109;&#106;&#48;&#48;&#064;&#106;&#102;&#115;&#099;&#046;&#106;&#117;&#115;&#046;&#098;&#114;</a>
 </address>
+
+[Política de privacidade e termos de serviço](/politica-termos)
