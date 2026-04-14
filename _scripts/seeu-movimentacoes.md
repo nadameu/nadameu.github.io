@@ -18,22 +18,14 @@ Os botões para carregar os documentos de cada sequencial são pressionados auto
 
 É acrescentada uma informação visual em cada sequencial, cuja cor reflete o tipo de "parte" responsável pela movimentação:
 
-- <strong style="color: #698e23;">Verde</strong>: Juízes(as) e servidores(as);
-- <strong style="color: #236e8e;">Azul</strong>: Ministério Público;
-- <strong style="color: #8e3523;">Vermelho</strong>: advogado(a);
-- <strong style="color: #595959;">Cinza</strong>: outros.
-
 <figure>
 	<img src="../images/seeu/movimentacoes-responsavel.png" alt="" style="width: 100%; max-width: 295px; height: auto;" width="295" height="427">
 	<figcaption>Informação visual quanto ao(à) responsável pela movimentação</figcaption>
 </figure>
 
-Destaque para movimentações realizadas por magistrados(as):
+Obs. 1: As cores acima são meramente exemplificativas. A versão atual do _script_ reflete as cores utilizadas pelo próprio SEEU na seção "Realces" da aba "Movimentações".
 
-<figure>
-	<img src="../images/seeu/movimentacoes-magistrado.png" alt="" style="width: 100%; max-width: 845px; height: auto;" width="845" height="91">
-	<figcaption>Movimentação realizada por magistrado</figcaption>
-</figure>
+Obs. 2: O destaque para movimentações realizadas por magistrados(as) foi desabilitado no _script_ pois a funcionalidade passou a ser integrada ao SEEU.
 
 Alteração da forma de apresentação dos documentos juntados, para facilitar a rápida identificação de seu conteúdo:
 
